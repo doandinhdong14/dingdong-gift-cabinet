@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+  <g transform="translate(200, 130)">
+    <polygon points="0,-60 60,-25 0,10 -60,-25" fill="#CBD5E1"/>
+    <polygon points="-60,-25 0,10 0,80 -60,45" fill="#94A3B8"/>
+    <polygon points="0,10 60,-25 60,45 0,80" fill="#64748B"/>
+  </g>
+  <rect x="110" y="230" width="180" height="28" rx="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="200" y="249" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#92400E" text-anchor="middle">
+    ⚠️ Chế độ 2D Fallback
+  </text>
+  <text x="200" y="278" font-family="system-ui, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">
+    Không khởi tạo được WebGL hoặc thiết bị không hỗ trợ 3D
+  </text>
+</svg>
