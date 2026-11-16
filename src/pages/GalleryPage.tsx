@@ -53,22 +53,22 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
 
   return (
     <div className="gallery-page-container">
-      {/* Dev Stage A Banner */}
+      {/* Stage Banner */}
       <div className="stage-a-banner" role="status">
         <div className="banner-left">
-          <span className="banner-tag">GIAI ĐOẠN A</span>
+          <span className="banner-tag">GIAI ĐOẠN B</span>
           <p className="banner-text">
-            Khung ứng dụng tủ đồ đã sẵn sàng. Gallery hiện trạng thái trống theo đúng đặc tả (chưa tạo Trái tim mẫu 1). Bạn có thể mở khối kiểm tra kỹ thuật để thử nghiệm toàn bộ tính năng.
+            Đã hoàn thiện Trái tim mẫu 1 (<code>heart-01</code>) với hình khối 3D phồng mềm, bề mặt satin san hô và chuyển động độc lập. Mẫu đang ở trạng thái <strong>review</strong> để bạn duyệt hình ảnh trước khi duyệt chính thức.
           </p>
         </div>
         <button
           type="button"
           className="btn-open-dev"
-          onClick={onNavigateDev}
-          title="Mở khối kiểm tra kỹ thuật trong xưởng 3D"
+          onClick={() => onSelectAsset('heart-01')}
+          title="Mở Trái tim mẫu 1 trong xưởng 3D"
         >
-          <Terminal size={15} />
-          <span>Mở Khối kiểm tra kỹ thuật</span>
+          <Sparkles size={15} />
+          <span>Xem & Tinh chỉnh Trái tim 3D</span>
           <ArrowRight size={14} />
         </button>
       </div>

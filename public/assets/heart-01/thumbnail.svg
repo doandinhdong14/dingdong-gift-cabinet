@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <!-- Soft warm studio radial gradient for background -->
+    <radialGradient id="bg-grad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="100%" stop-color="#F3EFE6"/>
+    </radialGradient>
+
+    <!-- 3D Heart Satin Shading Gradient -->
+    <radialGradient id="heart-light" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FFA8BF"/>
+      <stop offset="35%" stop-color="#F46C91"/>
+      <stop offset="80%" stop-color="#DE4E76"/>
+      <stop offset="100%" stop-color="#B83257"/>
+    </radialGradient>
+
+    <!-- Soft ambient shadow -->
+    <radialGradient id="drop-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(180, 100, 120, 0.28)"/>
+      <stop offset="60%" stop-color="rgba(180, 100, 120, 0.10)"/>
+      <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
+    </radialGradient>
+
+    <!-- Specular rim highlight -->
+    <linearGradient id="rim-specular" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="40%" stop-color="#FFFFFF" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bg-grad)"/>
+
+  <!-- Drop Shadow on studio floor -->
+  <ellipse cx="202" cy="245" rx="72" ry="14" fill="url(#drop-shadow)"/>
+
+  <!-- 3D Candy Heart representation angled at -15 deg Y -->
+  <g transform="translate(200, 135) rotate(-3)">
+    <!-- Base Heart Mesh Path -->
+    <path d="M 0,-25
+             C 18,-65 65,-75 92,-40
+             C 120,-4 110,48 55,95
+             C 25,120 0,132 0,132
+             C 0,132 -25,120 -55,95
+             C -110,48 -120,-4 -92,-40
+             C -65,-75 -18,-65 0,-25 Z"
+          fill="url(#heart-light)" />
+
+    <!-- Left Lobe Highlight (Satin specular) -->
+    <ellipse cx="-45" cy="-35" rx="30" ry="22" transform="rotate(-25 -45 -35)" fill="#FFFFFF" opacity="0.32" />
+    <ellipse cx="-48" cy="-38" rx="16" ry="10" transform="rotate(-25 -48 -38)" fill="#FFFFFF" opacity="0.45" />
+
+    <!-- Right Lobe Secondary Bounce Highlight -->
+    <ellipse cx="48" cy="-28" rx="26" ry="18" transform="rotate(20 48 -28)" fill="#FFFFFF" opacity="0.22" />
+
+    <!-- Soft upper cleft shadow -->
+    <path d="M 0,-25 C 5,-10 8,10 0,35 C -8,10 -5,-10 0,-25 Z" fill="#9C1E42" opacity="0.28" />
+
+    <!-- Rim highlight on top edge -->
+    <path d="M -90,-35 C -65,-72 -18,-62 0,-25 C 18,-62 65,-72 90,-35"
+          fill="none" stroke="url(#rim-specular)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

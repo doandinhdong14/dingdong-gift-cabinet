@@ -1,6 +1,8 @@
 import { RegistryEntry } from './types';
 import { devBoxManifest } from './objects/dev-fixture/manifest';
 import { devBoxDefaultConfig, devBoxPresets } from './objects/dev-fixture/presets';
+import { heart01Manifest } from './objects/heart-01/manifest';
+import { heart01DefaultConfig, heart01Presets } from './objects/heart-01/presets';
 
 /**
  * Standard categories defined in spec
@@ -19,9 +21,7 @@ export type CategoryName = typeof CATEGORIES[number];
 
 /**
  * Technical test fixture entry.
- * Separated from product registry per spec:
- * "Dùng một khối hình kỹ thuật đơn giản trong mục kiểm tra nội bộ để kiểm tra pipeline;
- * không quảng cáo nó là sản phẩm hoàn thiện. Demo kỹ thuật của A nằm ngoài registry sản phẩm."
+ * Kept for internal pipeline validation and testing.
  */
 export const DEV_FIXTURE_ENTRY: RegistryEntry = {
   manifest: devBoxManifest,
@@ -32,10 +32,16 @@ export const DEV_FIXTURE_ENTRY: RegistryEntry = {
 
 /**
  * PRODUCT REGISTRY:
- * In Stage A, this is strictly empty: no fake products, no Heart01 yet.
- * In Stage B, heart-01 will be added here.
+ * In Stage B, heart-01 ("Trái tim mẫu 1") is officially registered here.
  */
-export const PRODUCT_REGISTRY: RegistryEntry[] = [];
+export const PRODUCT_REGISTRY: RegistryEntry[] = [
+  {
+    manifest: heart01Manifest,
+    loadComponent: () => import('./objects/heart-01/Heart01'),
+    defaultConfig: heart01DefaultConfig,
+    defaultPresets: heart01Presets,
+  },
+];
 
 /**
  * Retrieve all product assets (for gallery display)

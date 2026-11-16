@@ -7,43 +7,58 @@ import {
   DEV_FIXTURE_ENTRY,
 } from '../src/gift-library/registry';
 
-describe('Gift Library Registry Contract', () => {
-  it('should have strictly empty PRODUCT_REGISTRY in Stage A (per spec)', () => {
-    // In Stage A, no heart-01 and no fake assets
-    expect(PRODUCT_REGISTRY).toHaveLength(0);
-    expect(getProductAssets()).toHaveLength(0);
+describe('Gift Library Registry Contract (Stage B: Heart-01)', () => {
+  it('should register exactly one product asset (heart-01) in Stage B', () => {
+    expect(PRODUCT_REGISTRY).toHaveLength(1);
+    const productAssets = getProductAssets();
+    expect(productAssets).toHaveLength(1);
+    expect(productAssets[0].manifest.id).toBe('heart-01');
+    expect(productAssets[0].manifest.name).toBe('Trái tim mẫu 1');
+    expect(productAssets[0].manifest.status).toBe('review');
+    expect(productAssets[0].manifest.version).toBe('0.1.0');
+    expect(productAssets[0].manifest.category).toBe('Trái tim');
+    expect(productAssets[0].manifest.kind).toBe('3d');
+    expect(productAssets[0].manifest.source).toBe('procedural');
+  });
+
+  it('should provide heart-01 with 3 default presets per spec', () => {
+    const heart = getAssetById('heart-01');
+    expect(heart).toBeDefined();
+    expect(heart?.defaultPresets).toHaveLength(3);
+    expect(heart?.defaultPresets.map((p) => p.name)).toEqual([
+      'Hồng dịu (Mặc định)',
+      'Đỏ yêu thương',
+      'Tím mộng mơ',
+    ]);
   });
 
   it('should provide the Dev Fixture with unique ID and valid manifest', () => {
     expect(DEV_FIXTURE_ENTRY.manifest.id).toBe('dev-box-fixture');
     expect(DEV_FIXTURE_ENTRY.manifest.schemaVersion).toBe(1);
     expect(DEV_FIXTURE_ENTRY.manifest.kind).toBe('3d');
-    expect(DEV_FIXTURE_ENTRY.manifest.status).toBe('draft');
     expect(DEV_FIXTURE_ENTRY.manifest.dependencies).toContain('@react-three/fiber');
     expect(DEV_FIXTURE_ENTRY.manifest.supportedMotions).toEqual(
       expect.arrayContaining(['float', 'heartbeat', 'spin'])
     );
   });
 
-  it('should retrieve Dev Fixture by ID through getAssetById', () => {
-    const entry = getAssetById('dev-box-fixture');
-    expect(entry).toBeDefined();
-    expect(entry?.manifest.id).toBe('dev-box-fixture');
-  });
-
-  it('should return undefined for non-existent asset ID', () => {
+  it('should retrieve both heart-01 and dev fixture by ID', () => {
+    expect(getAssetById('heart-01')).toBeDefined();
+    expect(getAssetById('dev-box-fixture')).toBeDefined();
     expect(getAssetById('non-existent-asset')).toBeUndefined();
   });
 
-  it('should accurately compute category counts without fake numbers', () => {
-    const counts = getCategoryCounts(['favorite-1', 'favorite-2']);
-    // In Stage A with empty product registry:
-    expect(counts['Tất cả']).toBe(0);
-    expect(counts['Trái tim']).toBe(0);
-    expect(counts['Phong bì']).toBe(0);
-    expect(counts['Hộp quà']).toBe(0);
-    expect(counts['Máy bay']).toBe(0);
-    expect(counts['Trang trí']).toBe(0);
-    expect(counts['Yêu thích']).toBe(0); // since none of the favorites match product assets
+  it('should accurately compute category counts strictly from real registry', () => {
+    const countsWithoutFav = getCategoryCounts([]);
+    expect(countsWithoutFav['Tất cả']).toBe(1);
+    expect(countsWithoutFav['Trái tim']).toBe(1);
+    expect(countsWithoutFav['Phong bì']).toBe(0);
+    expect(countsWithoutFav['Hộp quà']).toBe(0);
+    expect(countsWithoutFav['Máy bay']).toBe(0);
+    expect(countsWithoutFav['Trang trí']).toBe(0);
+    expect(countsWithoutFav['Yêu thích']).toBe(0);
+
+    const countsWithFav = getCategoryCounts(['heart-01']);
+    expect(countsWithFav['Yêu thích']).toBe(1);
   });
 });

@@ -1,8 +1,12 @@
-# DingDong Gift — Tủ đồ sáng tạo (Giai đoạn A)
+# DingDong Gift — Tủ đồ sáng tạo
 
 Ứng dụng web nội bộ dùng để lưu trữ, xem trước 3D, tinh chỉnh tham số và tái sử dụng các chi tiết trang trí cho thiệp chúc mừng.
 
-Dự án hiện đã hoàn thành **GIAI ĐOẠN A**: xây dựng toàn bộ bộ khung tủ đồ, gallery, sân khấu 3D studio, bộ điều khiển tham số, cơ chế lưu biến thể cục bộ, nhập/xuất JSON, sinh đoạn mã JSX/AI và trang thử tích hợp trên thiệp chúc mừng. Bộ khung đang hoạt động cùng **Khối kiểm tra kỹ thuật (Dev Fixture)**; chưa tạo Trái tim mẫu 1 (thuộc Giai đoạn B).
+Dự án hiện đã hoàn thành **GIAI ĐOẠN B**:
+- Hoàn thiện toàn bộ bộ khung tủ đồ, gallery, sân khấu 3D studio, bộ điều khiển tham số, preset localStorage, import/export JSON, sinh snippet JSX/AI.
+- Tạo chi tiết 3D chính thức đầu tiên: **Trái tim mẫu 1 (`heart-01`)** với hình khối phồng mềm procedural, bề mặt satin hồng san hô, rãnh trên mềm, đỉnh dưới bo nhẹ, không seam, 3 preset màu sắc mặc định và chuyển động lơ lửng, nhịp tim kép (lub-dub), tự xoay độc lập.
+- Tích hợp mẫu vào thiệp chúc mừng trên trang **"Thử trên thiệp"** với 2 instance độc lập về màu sắc, kích thước và chuyển động.
+- Trạng thái hiện tại: `review` để chủ dự án duyệt hình dáng 3D.
 
 ---
 
@@ -30,7 +34,7 @@ npm run dev
 
 Sau khi chạy lệnh, màn hình dòng lệnh sẽ hiển thị địa chỉ truy cập:
 ```text
-  VITE v6.2.0  ready in 250 ms
+  VITE v6.4.6  ready in 244 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://192.168.x.x:5173/
@@ -39,11 +43,11 @@ Sau khi chạy lệnh, màn hình dòng lệnh sẽ hiển thị địa chỉ tr
 ### Bước 3: Mở và trải nghiệm ứng dụng
 - Giữ phím `Ctrl` và nhấp vào liên kết `http://localhost:5173/` hoặc copy dán vào trình duyệt của bạn.
 - Khi mở ứng dụng:
-  - **Bộ sưu tập**: Hiển thị trạng thái Giai đoạn A sẵn sàng tiếp nhận tài nguyên mới. Bấm nút **"Mở Khối kiểm tra kỹ thuật"** trên banner hoặc menu trên cùng.
-  - **Xưởng 3D & Bảng điều khiển**: Xoay mô hình bằng chuột, đổi màu sắc, thử nghiệm lơ lửng, nhịp tim hoặc tự xoay.
+  - **Bộ sưu tập**: Thẻ **Trái tim mẫu 1** xuất hiện nổi bật với nhãn trạng thái *Chờ duyệt (Review)* và hình thu nhỏ hồng san hô. Nhấn nút **"Xem mẫu"** để vào xưởng 3D.
+  - **Xưởng 3D & Bảng điều khiển**: Xoay ngắm trái tim ở mọi góc nhìn (chính diện, 45 độ, cạnh bên, mặt sau), thử 3 chế độ nền (Sáng, Tối, Ô caro), đổi màu sang "Đỏ yêu thương" hoặc "Tím mộng mơ", bật nhịp tim hoặc tự xoay.
   - **Biến thể**: Bấm nút **"Lưu biến thể"** để lưu lại cấu hình riêng vào trình duyệt. Thử đổi tên, xóa, hoặc xuất/nhập file JSON sao lưu.
-  - **Cách sử dụng**: Xem trước và sao chép đoạn mã JSX hoặc câu lệnh chỉ dẫn cho AI.
-  - **Thử trên thiệp**: Chuyển sang mục **"Thử trên thiệp"** trên thanh điều hướng để xem trước mô phỏng tấm thiệp chúc mừng và kiểm tra 2 instance độc lập.
+  - **Cách sử dụng**: Xem trước và sao chép đoạn mã React Three Fiber JSX sẵn sàng chạy hoặc câu lệnh chỉ dẫn cho AI ghép thiệp.
+  - **Thử trên thiệp**: Chuyển sang mục **"Thử trên thiệp"** trên thanh điều hướng để xem trước mô phỏng tấm thiệp chúc mừng với 2 instance `Heart01` hoạt động đồng thời và độc lập.
 
 ### Cách dừng máy chủ:
 Trong cửa sổ dòng lệnh, bấm tổ hợp phím `Ctrl + C` và gõ `Y` (hoặc Enter) để dừng server.
@@ -58,8 +62,6 @@ Vite đã được cấu hình cờ `host: true` trong file cấu hình. Bạn c
 2. Khi chạy `npm run dev`, hãy nhìn vào dòng `Network:` (ví dụ: `http://192.168.1.15:5173/`).
 3. Mở trình duyệt Safari hoặc Chrome trên điện thoại, nhập chính xác địa chỉ `http://192.168.x.x:5173/`.
 
-> **LƯU Ý BẢO MẬT:** Dev server này chỉ dùng để kiểm tra giao diện cục bộ trong mạng gia đình / văn phòng. Tuyệt đối không mở port forwarding ra ngoài Internet công cộng hoặc đưa thông tin nhạy cảm vào.
-
 ---
 
 ## 4. Các lệnh kiểm tra chất lượng (Scripts)
@@ -67,13 +69,13 @@ Vite đã được cấu hình cờ `host: true` trong file cấu hình. Bạn c
 Dự án cung cấp đầy đủ các script kiểm định chất lượng:
 
 ```bash
-# Kiểm tra an toàn kiểu dữ liệu TypeScript
+# Kiểm tra an toàn kiểu dữ liệu TypeScript (0 lỗi)
 npm run typecheck
 
-# Kiểm tra cú pháp và quy chuẩn mã nguồn (ESLint)
+# Kiểm tra cú pháp và quy chuẩn mã nguồn ESLint (0 lỗi)
 npm run lint
 
-# Chạy toàn bộ 46 ca kiểm thử tự động (Vitest)
+# Chạy toàn bộ 51 ca kiểm thử tự động (Vitest - 100% PASS)
 npm test
 
 # Đóng gói sản phẩm hoàn thiện cho môi trường tĩnh (Production Build)
@@ -85,9 +87,9 @@ npm run preview
 
 ---
 
-## 5. Các quyết định kỹ thuật & Giả định thiết kế
+## 5. Tài liệu kỹ thuật đi kèm
 
-1. **Khối kiểm tra kỹ thuật (Dev Fixture):** Theo đúng yêu cầu phân kỳ Giai đoạn A, khối hình kỹ thuật chuẩn hóa cao 2.0 đơn vị được đặt tại `src/gift-library/objects/dev-fixture` và tách biệt hoàn toàn khỏi registry sản phẩm `PRODUCT_REGISTRY`.
-2. **Lưu trữ cục bộ an toàn:** Mọi dữ liệu preset và yêu thích được lưu dưới namespace `dingdong-gift-cabinet:v1:*`. Nếu trình duyệt đầy bộ nhớ hoặc bị chặn cookie/localStorage, hệ thống tự động fallback sang bộ nhớ tạm trong phiên làm việc mà không làm crash ứng dụng hay xóa đè dữ liệu cũ.
-3. **Bộ lọc tìm kiếm tiếng Việt:** Hỗ trợ tìm kiếm không phân biệt chữ hoa, chữ thường và khử dấu tiếng Việt (ví dụ gõ "trai tim" vẫn tìm được "Trái tim").
-4. **Không phụ thuộc Internet sau khi cài:** Ứng dụng không gọi bất kỳ API bên ngoài, font mạng, CDN hay server đám mây nào; hoạt động 100% offline.
+- [docs/ADDING_ASSETS.md](file:///c:/Users/Administrator/Downloads/c%C3%A1c%20chi%20ti%E1%BA%BFt%20trong%20thi%E1%BB%87p/docs/ADDING_ASSETS.md): Quy trình 5 bước thêm tài nguyên mới và quy tắc bảo vệ mẫu đã duyệt.
+- [docs/REUSE_IN_CARD.md](file:///c:/Users/Administrator/Downloads/c%C3%A1c%20chi%20ti%E1%BA%BFt%20trong%20thi%E1%BB%87p/docs/REUSE_IN_CARD.md): Hướng dẫn tái sử dụng `Heart01` và `MotionRig` trong dự án thiệp chúc mừng.
+- [docs/QA.md](file:///c:/Users/Administrator/Downloads/c%C3%A1c%20chi%20ti%E1%BA%BFt%20trong%20thi%E1%BB%87p/docs/QA.md): Báo cáo chi tiết kết quả kiểm định chất lượng và kích thước hình học thực đo của `heart-01`.
+- [src/gift-library/objects/heart-01/README.md](file:///c:/Users/Administrator/Downloads/c%C3%A1c%20chi%20ti%E1%BA%BFt%20trong%20thi%E1%BB%87p/src/gift-library/objects/heart-01/README.md): Tài liệu kỹ thuật chi tiết của `heart-01`.

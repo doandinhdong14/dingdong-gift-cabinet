@@ -1,10 +1,10 @@
 import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { Sparkles, Terminal, Info, RefreshCw } from 'lucide-react';
+import { Sparkles, Heart, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { MotionRig } from '../gift-library/motion/MotionRig';
-import { DevBox } from '../gift-library/objects/dev-fixture/DevBox';
-import { devBoxDefaultConfig } from '../gift-library/objects/dev-fixture/presets';
+import { Heart01 } from '../gift-library/objects/heart-01/Heart01';
+import { heart01DefaultConfig } from '../gift-library/objects/heart-01/presets';
 import { StudioLighting } from '../viewer/StudioLighting';
 import { AssetConfig } from '../gift-library/types';
 
@@ -13,64 +13,56 @@ export interface IntegrationPageProps {
 }
 
 export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConfig }) => {
-  // In Stage A, product card shows "Chưa có mẫu" by default
-  const [showDevFixturePreview, setShowDevFixturePreview] = useState(false);
   const [showSecondInstance, setShowSecondInstance] = useState(true);
 
-  // Instance 1 config
+  // Instance 1 config: defaults to heart01DefaultConfig or user's active config
   const [instance1Config, setInstance1Config] = useState<AssetConfig>(
-    lastActiveConfig || devBoxDefaultConfig
+    lastActiveConfig && lastActiveConfig.assetId === 'heart-01'
+      ? lastActiveConfig
+      : heart01DefaultConfig
   );
 
-  // Instance 2 config (independent instance to test isolation)
+  // Instance 2 config: an independent, smaller purple companion heart to verify isolation
   const instance2Config: AssetConfig = {
-    ...devBoxDefaultConfig,
+    ...heart01DefaultConfig,
     appearance: {
-      color: '#F46C91',
-      roughness: 0.25,
+      color: '#B58CEB', // Dreamy purple
+      roughness: 0.35,
       metalness: 0.0,
     },
     transform: {
-      scale: 0.55,
-      rotationDeg: [0, 25, 10],
+      scale: 0.52,
+      rotationDeg: [10, 20, 5],
     },
     motion: {
-      float: { enabled: true, amplitude: 0.05, speed: 0.5 },
-      heartbeat: { enabled: true, strength: 0.08, bpm: 90 },
-      spin: { enabled: true, speedDegPerSecond: 25 },
+      float: { enabled: true, amplitude: 0.06, speed: 0.45 },
+      heartbeat: { enabled: true, strength: 0.05, bpm: 84 },
+      spin: { enabled: false, speedDegPerSecond: 15 },
     },
   };
 
   const handleApplyCurrentConfig = () => {
-    if (lastActiveConfig) {
+    if (lastActiveConfig && lastActiveConfig.assetId === 'heart-01') {
       setInstance1Config({ ...lastActiveConfig });
     }
   };
 
   return (
     <div className="integration-page-container">
-      {/* Stage A Status Notice */}
+      {/* Stage B Status Banner */}
       <div className="integration-notice-card">
         <div className="notice-icon-col">
-          <Info size={24} className="text-primary" />
+          <Heart size={24} className="text-primary" />
         </div>
         <div className="notice-body-col">
-          <h4>Kiểm tra khả năng tái sử dụng trên thiệp chúc mừng</h4>
+          <h4>Thử nghiệm tái sử dụng Trái tim mẫu 1 (`heart-01`) trên thiệp</h4>
           <p>
-            Theo đặc tả <strong>Giai đoạn A</strong>: Thẻ thiệp hiển thị trạng thái <em>Chưa có mẫu</em> cho đến khi Trái tim mẫu 1 được tạo ở Giai đoạn B.
-            Bạn có thể bật chế độ kiểm tra với <strong>Khối kỹ thuật (Dev Fixture)</strong> để xác minh tính độc lập của các instance 3D và pipeline tái sử dụng.
+            Trang này xác minh khả năng tái sử dụng thực tế của component <code>Heart01</code> và <code>MotionRig</code>.
+            Mô hình được nhúng trực tiếp vào sân khấu thiệp chúc mừng với ánh sáng studio mềm.
+            Bạn có thể kiểm tra 2 instance hoạt động đồng thời và hoàn toàn độc lập về màu sắc, scale và chuyển động.
           </p>
           <div className="notice-actions-row">
-            <button
-              type="button"
-              className={`btn-toggle-dev-card ${showDevFixturePreview ? 'active' : ''}`}
-              onClick={() => setShowDevFixturePreview((v) => !v)}
-            >
-              <Terminal size={15} />
-              <span>{showDevFixturePreview ? 'Ẩn bản thử kỹ thuật' : 'Bật bản thử kỹ thuật trên thiệp'}</span>
-            </button>
-
-            {showDevFixturePreview && lastActiveConfig && (
+            {lastActiveConfig && lastActiveConfig.assetId === 'heart-01' && (
               <button
                 type="button"
                 className="btn-apply-recent-config"
@@ -82,16 +74,17 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
               </button>
             )}
 
-            {showDevFixturePreview && (
-              <label className="checkbox-dual-instance">
-                <input
-                  type="checkbox"
-                  checked={showSecondInstance}
-                  onChange={(e) => setShowSecondInstance(e.target.checked)}
-                />
-                <span>Hiển thị instance thứ hai (kiểm tra tính độc lập màu sắc/motion)</span>
-              </label>
-            )}
+            <label className="checkbox-dual-instance">
+              <input
+                type="checkbox"
+                checked={showSecondInstance}
+                onChange={(e) => setShowSecondInstance(e.target.checked)}
+              />
+              <span>
+                <CheckCircle2 size={14} className="text-success" />
+                Hiển thị instance thứ hai (Tím mộng mơ • Scale 0.52x • Nhịp tim 84 BPM độc lập)
+              </span>
+            </label>
           </div>
         </div>
       </div>
@@ -113,70 +106,52 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
 
               {/* 3D Scene viewport on card */}
               <div className="card-viewport-stage" role="region" aria-label="Khung chi tiết trang trí thiệp">
-                {showDevFixturePreview ? (
-                  <Canvas
-                    camera={{ position: [0, 0, 5], fov: 42 }}
-                    dpr={[1, 1.5]}
-                    gl={{ alpha: true, antialias: true }}
-                  >
-                    <StudioLighting />
+                <Canvas
+                  camera={{ position: [0, 0, 4.8], fov: 42 }}
+                  dpr={[1, 1.5]}
+                  gl={{ alpha: true, antialias: true }}
+                >
+                  <StudioLighting />
 
-                    <Suspense fallback={null}>
-                      {/* Instance 1 (Main object) */}
-                      <group position={showSecondInstance ? [-0.8, 0, 0] : [0, 0, 0]}>
+                  <Suspense fallback={null}>
+                    {/* Instance 1 (Main Heart01 object) */}
+                    <group position={showSecondInstance ? [-0.65, 0.05, 0] : [0, 0, 0]}>
+                      <MotionRig
+                        transform={instance1Config.transform}
+                        motion={instance1Config.motion}
+                      >
+                        <Heart01
+                          color={instance1Config.appearance.color}
+                          roughness={instance1Config.appearance.roughness}
+                          metalness={instance1Config.appearance.metalness}
+                        />
+                      </MotionRig>
+                    </group>
+
+                    {/* Instance 2 (Secondary independent instance) */}
+                    {showSecondInstance && (
+                      <group position={[1.15, -0.35, 0]}>
                         <MotionRig
-                          transform={instance1Config.transform}
-                          motion={instance1Config.motion}
+                          transform={instance2Config.transform}
+                          motion={instance2Config.motion}
                         >
-                          <DevBox
-                            color={instance1Config.appearance.color}
-                            roughness={instance1Config.appearance.roughness}
-                            metalness={instance1Config.appearance.metalness}
+                          <Heart01
+                            color={instance2Config.appearance.color}
+                            roughness={instance2Config.appearance.roughness}
+                            metalness={instance2Config.appearance.metalness}
                           />
                         </MotionRig>
                       </group>
+                    )}
+                  </Suspense>
 
-                      {/* Instance 2 (Secondary independent instance) */}
-                      {showSecondInstance && (
-                        <group position={[1.2, -0.4, 0]}>
-                          <MotionRig
-                            transform={instance2Config.transform}
-                            motion={instance2Config.motion}
-                          >
-                            <DevBox
-                              color={instance2Config.appearance.color}
-                              roughness={instance2Config.appearance.roughness}
-                              metalness={instance2Config.appearance.metalness}
-                            />
-                          </MotionRig>
-                        </group>
-                      )}
-                    </Suspense>
-
-                    <OrbitControls
-                      enablePan={false}
-                      minDistance={3}
-                      maxDistance={7}
-                      autoRotate={false}
-                    />
-                  </Canvas>
-                ) : (
-                  <div className="card-empty-placeholder">
-                    <div className="placeholder-content">
-                      <span className="placeholder-badge">Chưa có mẫu chính thức</span>
-                      <p className="placeholder-desc">
-                        Giai đoạn A: Khung thiệp đã sẵn sàng. Trái tim 3D chính thức sẽ xuất hiện tại đây sau khi hoàn tất Giai đoạn B.
-                      </p>
-                      <button
-                        type="button"
-                        className="btn-enable-preview"
-                        onClick={() => setShowDevFixturePreview(true)}
-                      >
-                        <Terminal size={14} /> Bật thử nghiệm với Dev Fixture
-                      </button>
-                    </div>
-                  </div>
-                )}
+                  <OrbitControls
+                    enablePan={false}
+                    minDistance={3.0}
+                    maxDistance={7.5}
+                    autoRotate={false}
+                  />
+                </Canvas>
               </div>
 
               {/* Card Footer */}

@@ -2,12 +2,12 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { GalleryPage } from '../src/pages/GalleryPage';
 import { ParameterPanel } from '../src/components/ParameterPanel';
-import { devBoxDefaultConfig } from '../src/gift-library/objects/dev-fixture/presets';
-import { devBoxManifest } from '../src/gift-library/objects/dev-fixture/manifest';
+import { heart01DefaultConfig } from '../src/gift-library/objects/heart-01/presets';
+import { heart01Manifest } from '../src/gift-library/objects/heart-01/manifest';
 import { UsageSnippet } from '../src/components/UsageSnippet';
 
-describe('UI Smoke & Component Integration Tests', () => {
-  it('renders Gallery Page with Stage A banner and empty state', () => {
+describe('UI Smoke & Component Integration Tests (Stage B)', () => {
+  it('renders Gallery Page with Stage B banner and Trái tim mẫu 1 card', () => {
     const handleSelect = vi.fn();
     const handleDev = vi.fn();
     const handleFav = vi.fn();
@@ -21,30 +21,32 @@ describe('UI Smoke & Component Integration Tests', () => {
       />
     );
 
-    // Verify Stage A banner
-    expect(screen.getByText('GIAI ĐOẠN A')).toBeInTheDocument();
+    // Verify Stage B banner
+    expect(screen.getByText('GIAI ĐOẠN B')).toBeInTheDocument();
     expect(
-      screen.getByText(/Gallery hiện trạng thái trống theo đúng đặc tả/i)
+      screen.getByText(/Đã hoàn thiện Trái tim mẫu 1/i)
     ).toBeInTheDocument();
 
-    // Verify empty state title
-    expect(screen.getByText('Chưa có mẫu nào trong bộ sưu tập')).toBeInTheDocument();
+    // Verify Heart-01 card is rendered in the gallery grid
+    expect(screen.getByText('Trái tim mẫu 1')).toBeInTheDocument();
+    expect(screen.getByText('v0.1.0')).toBeInTheDocument();
+    expect(screen.getByText(/Chờ duyệt/i)).toBeInTheDocument(); // review status
 
-    // Click Dev button
-    const devBtn = screen.getByRole('button', { name: /Kiểm tra bằng Khối kỹ thuật/i });
-    fireEvent.click(devBtn);
-    expect(handleDev).toHaveBeenCalledTimes(1);
+    // Click "Xem mẫu" on the heart card
+    const viewBtn = screen.getByRole('button', { name: /Xem mẫu Trái tim mẫu 1/i });
+    fireEvent.click(viewBtn);
+    expect(handleSelect).toHaveBeenCalledWith('heart-01');
   });
 
-  it('renders ParameterPanel and allows updating color and sliders', () => {
+  it('renders ParameterPanel with heart-01 config and allows updates', () => {
     const handleChange = vi.fn();
     const handleReset = vi.fn();
     const handleSave = vi.fn();
 
     render(
       <ParameterPanel
-        config={devBoxDefaultConfig}
-        defaultConfig={devBoxDefaultConfig}
+        config={heart01DefaultConfig}
+        defaultConfig={heart01DefaultConfig}
         onChange={handleChange}
         onReset={handleReset}
         onOpenSavePreset={handleSave}
@@ -60,7 +62,7 @@ describe('UI Smoke & Component Integration Tests', () => {
     expect(screen.getByText('3. Chuyển động (Motion)')).toBeInTheDocument();
 
     // Check color display
-    expect(screen.getByText(devBoxDefaultConfig.appearance.color.toUpperCase())).toBeInTheDocument();
+    expect(screen.getByText(heart01DefaultConfig.appearance.color.toUpperCase())).toBeInTheDocument();
 
     // Click reset button
     const resetBtn = screen.getByRole('button', { name: /Đặt lại mẫu/i });
@@ -73,20 +75,22 @@ describe('UI Smoke & Component Integration Tests', () => {
     expect(handleSave).toHaveBeenCalledTimes(1);
   });
 
-  it('renders UsageSnippet and switches between JSX, JSON, and AI tabs', () => {
-    render(<UsageSnippet manifest={devBoxManifest} config={devBoxDefaultConfig} />);
+  it('renders UsageSnippet and switches between JSX, JSON, and AI tabs for Heart01', () => {
+    render(<UsageSnippet manifest={heart01Manifest} config={heart01DefaultConfig} />);
 
     // JSX snippet tab is active by default
     expect(screen.getByText(/import { Canvas }/)).toBeInTheDocument();
+    expect(screen.getByText(/import { Heart01 }/)).toBeInTheDocument();
 
     // Switch to JSON tab
     const jsonTab = screen.getByRole('button', { name: /Cấu hình \(JSON\)/i });
     fireEvent.click(jsonTab);
-    expect(screen.getByText(/"schemaVersion": 1/)).toBeInTheDocument();
+    expect(screen.getByText(/"assetId": "heart-01"/)).toBeInTheDocument();
 
     // Switch to AI tab
     const aiTab = screen.getByRole('button', { name: /Lệnh cho AI/i });
     fireEvent.click(aiTab);
-    expect(screen.getByText(/Chỉ dẫn AI: Ghép chi tiết thiệp/)).toBeInTheDocument();
+    expect(screen.getByText(/Trái tim mẫu 1/)).toBeInTheDocument();
+    expect(screen.getByText(/KHÔNG TỰ Ý DỰNG LẠI HÌNH HỌC/)).toBeInTheDocument();
   });
 });
