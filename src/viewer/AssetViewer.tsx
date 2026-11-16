@@ -7,6 +7,7 @@ import { AssetConfig, AssetManifest } from '../gift-library/types';
 import { MotionRig } from '../gift-library/motion/MotionRig';
 import { StudioLighting } from './StudioLighting';
 import { ViewerErrorBoundary } from './ViewerErrorBoundary';
+import { resolveAssetUrl } from '../utils/assetUrl';
 
 export type BackgroundMode = 'light' | 'dark' | 'checkerboard';
 export type QualityMode = 'low' | 'high';
@@ -95,7 +96,7 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
               <AlertCircle size={14} /> Chế độ 2D Fallback (Mất WebGL Context)
             </div>
             <img
-              src={manifest.fallback}
+              src={resolveAssetUrl(manifest.fallback)}
               alt={`${manifest.name} (Chế độ 2D)`}
               className="fallback-image"
             />
@@ -112,7 +113,7 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
             <p>{loadError}</p>
           </div>
         ) : (
-          <ViewerErrorBoundary fallbackSvgUrl={manifest.fallback}>
+          <ViewerErrorBoundary fallbackSvgUrl={resolveAssetUrl(manifest.fallback)}>
             <Canvas
               camera={{ position: [0, 0, 4.5], fov: 45 }}
               dpr={dpr}

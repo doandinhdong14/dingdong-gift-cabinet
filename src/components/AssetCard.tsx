@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart, ArrowRight, ShieldCheck, Clock, FileEdit } from 'lucide-react';
 import { AssetManifest } from '../gift-library/types';
+import { resolveAssetUrl } from '../utils/assetUrl';
 
 export interface AssetCardProps {
   manifest: AssetManifest;
@@ -44,13 +45,13 @@ export const AssetCard: React.FC<AssetCardProps> = ({
       {/* Thumbnail area with fallback */}
       <div className="card-thumbnail-container" onClick={() => onSelect(manifest.id)}>
         <img
-          src={manifest.thumbnail}
+          src={resolveAssetUrl(manifest.thumbnail)}
           alt={`Hình thu nhỏ của ${manifest.name}`}
           className="card-thumbnail-img"
           loading="lazy"
           onError={(e) => {
             // Fallback to SVG if thumbnail image fails
-            (e.target as HTMLImageElement).src = manifest.fallback;
+            (e.target as HTMLImageElement).src = resolveAssetUrl(manifest.fallback);
           }}
         />
 
