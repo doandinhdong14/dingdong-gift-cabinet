@@ -828,7 +828,7 @@ a {
 }
 
 .bg-mode-dark .viewer-canvas-container {
-  background-color: #1A1A1E;
+  background-color: #061525;
 }
 
 .bg-mode-checkerboard .viewer-canvas-container {
@@ -2299,4 +2299,397 @@ a {
   .btn-label {
     display: none;
   }
+}
+
+
+/* ==========================================================================
+   Love Universe (love-universe-01) — Styles & Interactions
+   ========================================================================== */
+
+/* 3D Intro Button Overlay */
+.love-universe-intro-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.love-universe-intro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  pointer-events: auto;
+  position: relative;
+  z-index: 50;
+  animation: introFadeIn 0.8s ease-out;
+}
+
+@keyframes introFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.love-universe-touch-btn {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(13, 20, 38, 0.82);
+  border: 1.5px solid rgba(255, 245, 210, 0.7);
+  box-shadow: 0 0 25px rgba(255, 230, 150, 0.45), inset 0 0 15px rgba(255, 240, 180, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.love-universe-touch-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 35px rgba(255, 235, 170, 0.7), inset 0 0 20px rgba(255, 245, 200, 0.35);
+  border-color: rgba(255, 250, 225, 0.95);
+}
+
+.love-universe-touch-btn:active {
+  transform: scale(0.95);
+}
+
+.btn-inner-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: handPulse 2.4s infinite ease-in-out;
+}
+
+@keyframes handPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.pulse-ring {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 235, 170, 0.5);
+  animation: pulseRipple 2.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  pointer-events: none;
+}
+
+.pulse-ring-outer {
+  position: absolute;
+  top: -18px;
+  left: -18px;
+  right: -18px;
+  bottom: -18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 220, 140, 0.3);
+  animation: pulseRipple 2.2s infinite 0.7s cubic-bezier(0.215, 0.61, 0.355, 1);
+  pointer-events: none;
+}
+
+@keyframes pulseRipple {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.love-universe-intro-label {
+  color: #FFF7D6;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-top: 14px;
+  text-shadow: 0 0 10px rgba(255, 230, 150, 0.75), 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+  background: rgba(4, 8, 22, 0.7);
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 240, 180, 0.25);
+  backdrop-filter: blur(4px);
+}
+
+/* Universe Parameter Panel Styles */
+.universe-parameter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.param-row-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.universe-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  resize: vertical;
+  background: var(--bg-card);
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.universe-textarea:focus {
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 0 3px var(--primary-pink-light);
+}
+
+.photo-storage-info-box {
+  background: #F0F4FF;
+  border: 1px solid #D6E4FF;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  color: #1D39C4;
+  margin-bottom: 12px;
+}
+
+.storage-info-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.storage-info-desc {
+  margin: 0;
+  line-height: 1.45;
+  color: #2F54EB;
+}
+
+.photo-actions-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-upload-photo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--primary-pink);
+  color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-upload-photo:hover {
+  background: var(--primary-pink-hover);
+}
+
+.btn-clear-photos {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: var(--bg-subtle);
+  color: var(--danger);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-clear-photos:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+.uploaded-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.uploaded-photo-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.photo-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-delete-single-photo {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #FFF;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-delete-single-photo:hover {
+  background: var(--danger);
+}
+
+.photo-empty-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 6px 0;
+}
+
+.photo-feedback-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  color: var(--success);
+  margin-top: 6px;
+}
+
+.seed-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.seed-number-input {
+  width: 110px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  background: var(--bg-card);
+  color: var(--text-main);
+  outline: none;
+}
+
+.seed-number-input:focus {
+  border-color: var(--primary-pink);
+}
+
+.btn-seed-random {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-seed-random:hover {
+  background: var(--bg-hover);
+}
+
+.param-help-text {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.checkbox-control-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+/* Integration Page Tabs */
+.integration-tabs-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.integration-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.integration-tab-btn:hover {
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.integration-tab-btn.active {
+  background: var(--primary-pink-light);
+  border-color: var(--primary-pink);
+  color: var(--primary-pink);
+  font-weight: 600;
+}
+
+.card-surface-universe {
+  background: linear-gradient(180deg, #0e1529 0%, #040817 100%) !important;
+  color: #FFF !important;
+}
+
+.card-surface-universe .card-main-title {
+  color: #FFF7D6 !important;
+}
+
+.card-surface-universe .card-sub-title {
+  color: #E2E8F0 !important;
+}
+
+.card-surface-universe .card-signature {
+  color: #FFD166 !important;
+}
+
+.stage-universe-height {
+  height: 500px !important;
 }

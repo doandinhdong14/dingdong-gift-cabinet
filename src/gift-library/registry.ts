@@ -3,6 +3,8 @@ import { devBoxManifest } from './objects/dev-fixture/manifest';
 import { devBoxDefaultConfig, devBoxPresets } from './objects/dev-fixture/presets';
 import { heart01Manifest } from './objects/heart-01/manifest';
 import { heart01DefaultConfig, heart01Presets } from './objects/heart-01/presets';
+import { loveUniverse01Manifest } from './objects/love-universe-01/manifest';
+import { loveUniverse01DefaultConfig, loveUniverse01Presets } from './objects/love-universe-01/presets';
 
 /**
  * Standard categories defined in spec
@@ -32,7 +34,7 @@ export const DEV_FIXTURE_ENTRY: RegistryEntry = {
 
 /**
  * PRODUCT REGISTRY:
- * In Stage B, heart-01 ("Trái tim mẫu 1") is officially registered here.
+ * Official products catalog available in the cabinet gallery.
  */
 export const PRODUCT_REGISTRY: RegistryEntry[] = [
   {
@@ -40,6 +42,12 @@ export const PRODUCT_REGISTRY: RegistryEntry[] = [
     loadComponent: () => import('./objects/heart-01/Heart01'),
     defaultConfig: heart01DefaultConfig,
     defaultPresets: heart01Presets,
+  },
+  {
+    manifest: loveUniverse01Manifest,
+    loadComponent: () => import('./objects/love-universe-01/LoveUniverse01'),
+    defaultConfig: loveUniverse01DefaultConfig,
+    defaultPresets: loveUniverse01Presets,
   },
 ];
 

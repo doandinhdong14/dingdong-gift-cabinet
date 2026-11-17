@@ -53,6 +53,57 @@ export interface AssetMotion {
   spin: SpinMotionConfig;
 }
 
+export interface UniverseDecorationGroup {
+  id: string;
+  type: 'heart' | 'star3d' | 'giftbox';
+  name: string;
+  count: number;
+  color: string;
+  scale: number;        // 0.5 - 2.0
+  spinSpeed: number;    // 0 - 5.0
+  roughness?: number;   // 0.1 - 0.9
+  enabled: boolean;
+}
+
+export interface UniverseConfig {
+  wishes: string[];
+  textCount: number;
+  photoCount: number;
+  heartCount: number;
+  cloudWidth: number;
+  cloudHeight: number;
+  cloudDepth: number;
+  rotationSpeed: number;
+  textColor: string;
+  glowIntensity: number;
+  heartColor: string;
+  seed: number;
+  showIntro: boolean;
+  savedImageIds?: string[];
+
+  // New text lighting controls
+  glowEnabled?: boolean;
+  glowSpread?: number;
+  glowColor?: string;
+  textScaleFactor?: number;
+
+  // New photo scale controls
+  photoScaleFactor?: number;
+
+  // New heart controls
+  heartScaleFactor?: number;
+  heartRoughness?: number;
+  heartSpinSpeed?: number;
+  heartFloatAmp?: number;
+
+  // New downward drift scene motion controls
+  driftEnabled?: boolean;
+  driftSpeed?: number;
+
+  // New decorative objects
+  decorations?: UniverseDecorationGroup[];
+}
+
 export interface AssetConfig {
   schemaVersion: 1;
   assetId: string;
@@ -60,6 +111,7 @@ export interface AssetConfig {
   appearance: AssetAppearance;
   transform: AssetTransform;
   motion: AssetMotion;
+  universe?: UniverseConfig;
 }
 
 export interface Preset {

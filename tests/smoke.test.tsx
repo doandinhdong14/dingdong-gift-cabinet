@@ -27,10 +27,11 @@ describe('UI Smoke & Component Integration Tests (Stage B)', () => {
       screen.getByText(/Đã hoàn thiện Trái tim mẫu 1/i)
     ).toBeInTheDocument();
 
-    // Verify Heart-01 card is rendered in the gallery grid
+    // Verify Heart-01 and Love-Universe-01 cards are rendered in the gallery grid
     expect(screen.getByText('Trái tim mẫu 1')).toBeInTheDocument();
-    expect(screen.getByText('v0.1.0')).toBeInTheDocument();
-    expect(screen.getByText(/Chờ duyệt/i)).toBeInTheDocument(); // review status
+    expect(screen.getByText('Vũ trụ lời chúc')).toBeInTheDocument();
+    expect(screen.getAllByText('v0.1.0').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText(/Chờ duyệt/i).length).toBeGreaterThanOrEqual(2); // review status
 
     // Click "Xem mẫu" on the heart card
     const viewBtn = screen.getByRole('button', { name: /Xem mẫu Trái tim mẫu 1/i });

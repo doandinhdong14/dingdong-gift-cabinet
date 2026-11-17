@@ -8,6 +8,7 @@ import { MotionRig } from '../gift-library/motion/MotionRig';
 import { StudioLighting } from './StudioLighting';
 import { ViewerErrorBoundary } from './ViewerErrorBoundary';
 import { resolveAssetUrl } from '../utils/assetUrl';
+import { LoveUniverseIntroButton } from '../gift-library/objects/love-universe-01/LoveUniverseIntroButton';
 
 export type BackgroundMode = 'light' | 'dark' | 'checkerboard';
 export type QualityMode = 'low' | 'high';
@@ -25,12 +26,24 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
   onConfigChange,
   loadComponent,
 }) => {
+  const isUniverse = manifest.id === 'love-universe-01';
+
   const [LoadedComponent, setLoadedComponent] = useState<React.ComponentType<Record<string, unknown>> | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [bgMode, setBgMode] = useState<BackgroundMode>('light');
+  const [bgMode, setBgMode] = useState<BackgroundMode>(() => (isUniverse ? 'dark' : 'light'));
   const [qualityMode, setQualityMode] = useState<QualityMode>('high');
   const [webGlContextLost, setWebGlContextLost] = useState(false);
+  const [isUniverseOpened, setIsUniverseOpened] = useState(() => {
+    if (!isUniverse) return true;
+    return config.universe?.showIntro === false;
+  });
+
+  useEffect(() => {
+    if (isUniverse && config.universe?.showIntro === false) {
+      setIsUniverseOpened(true);
+    }
+  }, [isUniverse, config.universe?.showIntro]);
 
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
@@ -115,7 +128,7 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
         ) : (
           <ViewerErrorBoundary fallbackSvgUrl={resolveAssetUrl(manifest.fallback)}>
             <Canvas
-              camera={{ position: [0, 0, 4.5], fov: 45 }}
+              camera={{ position: isUniverse ? [0, 0, 9.2] : [0, 0, 4.5], fov: 45 }}
               dpr={dpr}
               gl={{
                 alpha: true,
@@ -135,33 +148,49 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
                 domEl.addEventListener('webglcontextrestored', handleContextRestored, false);
               }}
             >
-              <StudioLighting />
+              {!isUniverse && <StudioLighting />}
 
               <Suspense fallback={null}>
                 {LoadedComponent && (
-                  <MotionRig
-                    transform={config.transform}
-                    motion={config.motion}
-                    paused={isPaused}
-                  >
+                  isUniverse ? (
                     <LoadedComponent
-                      color={config.appearance.color}
-                      roughness={config.appearance.roughness}
-                      metalness={config.appearance.metalness}
+                      config={config}
+                      paused={isPaused}
+                      quality={qualityMode}
+                      isOpened={isUniverseOpened}
                     />
-                  </MotionRig>
+                  ) : (
+                    <MotionRig
+                      transform={config.transform}
+                      motion={config.motion}
+                      paused={isPaused}
+                    >
+                      <LoadedComponent
+                        color={config.appearance.color}
+                        roughness={config.appearance.roughness}
+                        metalness={config.appearance.metalness}
+                      />
+                    </MotionRig>
+                  )
                 )}
               </Suspense>
 
               <OrbitControls
                 ref={controlsRef}
                 enablePan={false}
-                minDistance={2.5}
-                maxDistance={8.0}
+                enableDamping={true}
+                dampingFactor={0.05}
+                minDistance={isUniverse ? 3.5 : 2.5}
+                maxDistance={isUniverse ? 24.0 : 8.0}
                 makeDefault
               />
             </Canvas>
           </ViewerErrorBoundary>
+        )}
+
+        {/* Intro Touch Button Overlay for Love Universe */}
+        {isUniverse && !isUniverseOpened && (
+          <LoveUniverseIntroButton onOpen={() => setIsUniverseOpened(true)} />
         )}
       </div>
 

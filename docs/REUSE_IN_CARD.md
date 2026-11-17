@@ -142,3 +142,85 @@ Các component trong `gift-library` là các React component sử dụng cú ph�
 Nếu dự án thiệp của bạn được xây dựng bằng HTML/CSS/JS thuần hoặc framework khác (Vue, Svelte), bạn có thể:
 1. Đóng gói component thành Web Component hoặc Micro-frontend.
 2. Hoặc trích xuất trực tiếp thuật toán hình học từ file `geometry.ts` để sử dụng trực tiếp với Three.js thuần.
+
+---
+
+## 6. Hướng dẫn mang mẫu "Vũ trụ lời chúc" (`love-universe-01`) sang thiệp khác
+
+Mẫu cảnh **Vũ trụ lời chúc** (`love-universe-01`) là một component 3D độc lập, bao gồm nền sao batched (Points), mây chữ phát sáng tiếng Việt chống đọc ngược từ mặt sau, ảnh kỷ niệm phân tầng và trái tim 3D procedural.
+
+### A. Các file cần sao chép:
+1. Thư mục component: `src/gift-library/objects/love-universe-01/`
+2. File hình học tim 3D procedural: `src/gift-library/objects/heart-01/geometry.ts`
+3. File tiện ích IndexedDB (nếu muốn người nhận tải ảnh lên): `src/storage/universeImageStorage.ts`
+4. File kiểu TypeScript: `src/gift-library/types.ts`
+
+### B. Ví dụ sử dụng trên thiệp chúc mừng:
+
+```tsx
+import React, { Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import { LoveUniverse01 } from './gift-library/objects/love-universe-01';
+
+export function CardGreetingUniverse() {
+  return (
+    <div style={{
+      maxWidth: '720px',
+      margin: '40px auto',
+      background: 'linear-gradient(180deg, #0e1529 0%, #040817 100%)',
+      borderRadius: '24px',
+      padding: '32px 24px',
+      boxShadow: '0 15px 40px rgba(0,0,0,0.3)',
+      textAlign: 'center',
+      color: '#FFFFFF'
+    }}>
+      <h2 style={{ color: '#FFF7D6', marginBottom: '8px' }}>
+        Vũ trụ yêu thương trao gửi đến bạn
+      </h2>
+      <p style={{ color: '#CBD5E1', fontSize: '15px' }}>
+        Nơi lưu giữ những kỷ niệm và ngàn lời chúc rực rỡ nhất giữa các vì sao.
+      </p>
+
+      {/* Sân khấu Vũ trụ 3D */}
+      <div style={{ width: '100%', height: '520px', position: 'relative', borderRadius: '16px', overflow: 'hidden' }}>
+        <Canvas
+          camera={{ position: [0, 0, 9.2], fov: 45 }}
+          gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        >
+          <Suspense fallback={null}>
+            <LoveUniverse01
+              wishes={[
+                'Iu em nhất trên đời',
+                'Chào cậu mình iu cậu nhiều lắm',
+                'Iu 1000 lần',
+                'Mỗi ngày đều yêu cậu',
+                'Bình yên là khi ở cạnh cậu',
+              ]}
+              textColor="#FFF7D6"
+              glowIntensity={0.85}
+              heartColor="#FF3B69"
+              showIntro={true} // Hiện nút "Chạm để mở vũ trụ"
+            />
+          </Suspense>
+
+          <OrbitControls
+            enablePan={false}
+            enableDamping={true}
+            dampingFactor={0.05}
+            minDistance={3.5}
+            maxDistance={22.0}
+          />
+        </Canvas>
+      </div>
+
+      <p style={{ fontSize: '13px', color: '#FFD166', fontStyle: 'italic', marginTop: '16px' }}>
+        Gửi ngàn vì sao đến người đặc biệt ✨
+      </p>
+    </div>
+  );
+}
+
+export default CardGreetingUniverse;
+```
+

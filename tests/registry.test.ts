@@ -7,18 +7,28 @@ import {
   DEV_FIXTURE_ENTRY,
 } from '../src/gift-library/registry';
 
-describe('Gift Library Registry Contract (Stage B: Heart-01)', () => {
-  it('should register exactly one product asset (heart-01) in Stage B', () => {
-    expect(PRODUCT_REGISTRY).toHaveLength(1);
+describe('Gift Library Registry Contract', () => {
+  it('should register both heart-01 and love-universe-01 in product registry', () => {
+    expect(PRODUCT_REGISTRY).toHaveLength(2);
     const productAssets = getProductAssets();
-    expect(productAssets).toHaveLength(1);
-    expect(productAssets[0].manifest.id).toBe('heart-01');
-    expect(productAssets[0].manifest.name).toBe('Trái tim mẫu 1');
-    expect(productAssets[0].manifest.status).toBe('review');
-    expect(productAssets[0].manifest.version).toBe('0.1.0');
-    expect(productAssets[0].manifest.category).toBe('Trái tim');
-    expect(productAssets[0].manifest.kind).toBe('3d');
-    expect(productAssets[0].manifest.source).toBe('procedural');
+    expect(productAssets).toHaveLength(2);
+
+    // Heart-01
+    const heart = productAssets.find((a) => a.manifest.id === 'heart-01');
+    expect(heart).toBeDefined();
+    expect(heart?.manifest.name).toBe('Trái tim mẫu 1');
+    expect(heart?.manifest.status).toBe('review');
+    expect(heart?.manifest.version).toBe('0.1.0');
+    expect(heart?.manifest.category).toBe('Trái tim');
+
+    // LoveUniverse-01
+    const universe = productAssets.find((a) => a.manifest.id === 'love-universe-01');
+    expect(universe).toBeDefined();
+    expect(universe?.manifest.name).toBe('Vũ trụ lời chúc');
+    expect(universe?.manifest.status).toBe('review');
+    expect(universe?.manifest.version).toBe('0.1.0');
+    expect(universe?.manifest.category).toBe('Trang trí');
+    expect(universe?.manifest.kind).toBe('3d');
   });
 
   it('should provide heart-01 with 3 default presets per spec', () => {
@@ -32,6 +42,13 @@ describe('Gift Library Registry Contract (Stage B: Heart-01)', () => {
     ]);
   });
 
+  it('should provide love-universe-01 with 3 default presets', () => {
+    const universe = getAssetById('love-universe-01');
+    expect(universe).toBeDefined();
+    expect(universe?.defaultPresets).toHaveLength(3);
+    expect(universe?.defaultPresets[0].name).toContain('Vũ trụ vàng kem & san hô');
+  });
+
   it('should provide the Dev Fixture with unique ID and valid manifest', () => {
     expect(DEV_FIXTURE_ENTRY.manifest.id).toBe('dev-box-fixture');
     expect(DEV_FIXTURE_ENTRY.manifest.schemaVersion).toBe(1);
@@ -42,23 +59,24 @@ describe('Gift Library Registry Contract (Stage B: Heart-01)', () => {
     );
   });
 
-  it('should retrieve both heart-01 and dev fixture by ID', () => {
+  it('should retrieve heart-01, love-universe-01, and dev fixture by ID', () => {
     expect(getAssetById('heart-01')).toBeDefined();
+    expect(getAssetById('love-universe-01')).toBeDefined();
     expect(getAssetById('dev-box-fixture')).toBeDefined();
     expect(getAssetById('non-existent-asset')).toBeUndefined();
   });
 
   it('should accurately compute category counts strictly from real registry', () => {
     const countsWithoutFav = getCategoryCounts([]);
-    expect(countsWithoutFav['Tất cả']).toBe(1);
+    expect(countsWithoutFav['Tất cả']).toBe(2);
     expect(countsWithoutFav['Trái tim']).toBe(1);
     expect(countsWithoutFav['Phong bì']).toBe(0);
     expect(countsWithoutFav['Hộp quà']).toBe(0);
     expect(countsWithoutFav['Máy bay']).toBe(0);
-    expect(countsWithoutFav['Trang trí']).toBe(0);
+    expect(countsWithoutFav['Trang trí']).toBe(1);
     expect(countsWithoutFav['Yêu thích']).toBe(0);
 
-    const countsWithFav = getCategoryCounts(['heart-01']);
+    const countsWithFav = getCategoryCounts(['love-universe-01']);
     expect(countsWithFav['Yêu thích']).toBe(1);
   });
 });

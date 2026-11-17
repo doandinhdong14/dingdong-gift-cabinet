@@ -79,3 +79,32 @@ Theo yêu cầu của mục 10 và 14 trong `spec.md`, các tiêu chí hình ả
 2. **Hiệu năng FPS trên thiết bị di động vật lý:**
    - Đã cấu hình responsive CSS tại các mốc 360px, 768px, 1440px.
    - Chưa tiến hành đo đạc FPS bằng công cụ profiling trên điện thoại thật (cần người dùng kết nối qua mạng Wi-Fi `http://192.168.x.x:5173/`).
+
+---
+
+## 5. Báo cáo Kiểm định Chất lượng — Mẫu "Vũ trụ lời chúc" (`love-universe-01`)
+
+**Mốc triển khai:** Cải tiến và đồng bộ hóa mẫu cảnh “Vũ trụ lời chúc” — ID `love-universe-01` bám sát VIDEO THAM CHIẾU GỐC (`chrome_cMXJXTGrhn.mp4`)  
+**Trạng thái tài nguyên:** `review` (Đã hoàn thiện hiệu chỉnh và xác minh tự động, sẵn sàng để chủ dự án duyệt hình trực quan)  
+
+### A. Kết quả kiểm tra tự động
+- **Typecheck (`npm run typecheck`):** **PASS** (0 errors).
+- **Test Suites (`npm test`):** **PASS 9/9 suites, 61/61 tests (100%)**.
+  - `tests/loveUniverse.test.ts` (7 tests): PRNG Mulberry32 determinism, phân bổ 3 lớp (near/mid/far), xác thực schema AssetConfig & presets, IndexedDB & in-memory fallback CRUD.
+  - `tests/codeGeneration.test.ts`: JSX generation cho LoveUniverse01 & prompt AI.
+  - `tests/registry.test.ts`: Đăng ký `love-universe-01` trong `PRODUCT_REGISTRY`.
+- **Production Build (`npm run build`):** **PASS**. Bundle chia chunk sạch đẹp (`three-vendor`, `react-vendor`, `index`).
+
+### B. Bảng đối chiếu chi tiết với video tham chiếu gốc (`chrome_cMXJXTGrhn.mp4`)
+| Hạng mục | Video chuẩn gốc (Chuẩn hình ảnh) | Thực tế triển khai trên `love-universe-01` | Đánh giá |
+|---|---|---|---|
+| **Nền không gian** | Xanh navy rất đậm (gần `#061525`), không đen kịt, không tinh vân rực màu hay chòm sao vẽ nét. | Nền vòm cầu màu `#061525` (`.bg-mode-dark` đồng bộ `#061525`), không gian sâu thẳm dịu mắt. | ĐẠT |
+| **Hệ thống sao** | Vô số chấm nhỏ mờ làm nền + một số ít chấm lớn/bokeh sáng mềm trắng ấm/vàng nhạt (`#FFFFFF`, `#FFFDF0`, `#FFE8A3`). | 90% hạt sao nhỏ li ti tạo chiều sâu nền + 10% hạt bokeh phát sáng mềm ấm, 1 draw call batching, 0 light sources thừa. | ĐẠT |
+| **Kiểu dáng chữ & Font** | Font nét mảnh/regular bo tròn nhẹ (Comfortaa/Quicksand), hỗ trợ dấu tiếng Việt đầy đủ, không dùng font nét dày/bold thô. | Google Fonts `Comfortaa` regular 400 kết hợp fallback `Quicksand` & `Be Vietnam Pro`, lắng nghe `document.fonts.ready` để rasterize chuẩn xác. | ĐẠT |
+| **Màu sắc & Quầng sáng chữ** | Lõi chữ màu trắng tinh/vàng kem gần trắng; quầng sáng vàng hổ phách mềm mại xung quanh; nét chữ sắc bén không nhòe. | Multi-pass glow rasterization: Pass 1 quầng sáng vàng hổ phách rộng (`rgba(255, 185, 30, 0.85)`), Pass 2 bloom vàng rực rỡ, Pass 3 chữ trắng core `#FFFFFF` không blur. Padding 64px H, 40px V chống cắt viền. | ĐẠT |
+| **Phân lớp cỡ chữ & Bố cục** | Cụm vũ trụ kéo dài theo phương thẳng đứng. Cỡ chữ biểu kiến phân tầng rõ rệt: vài câu gần lớn framing rìa khung hình, nhiều câu vừa và câu xa nhỏ. Lặp lại câu ngắn nhưng không chồng lấp đè chữ. | Stratified Y generation với `scaleBase`: near (1.35–1.70x), mid (0.78–1.05x), far (0.40–0.60x). Thuật toán kiểm tra va chạm 3D kết hợp hình chiếu 2D (screen projection check) loại bỏ hoàn toàn đè chữ ở góc nhìn ban đầu. | ĐẠT |
+| **Mặt phẳng ảnh** | Ảnh chữ nhật 3:4 hiển thị trực tiếp trên mặt phẳng 3D, borderless không viền Polaroid, không caption, không icon mạng xã hội, không làm cháy trắng ảnh. | Mặt phẳng ảnh 3D `0.90 x 1.20` borderless (tỉ lệ 3:4 portrait), không khung viền Polaroid, giữ nguyên màu sắc gốc, dùng 6 ảnh mẫu vector nghệ thuật trung tính cho tới khi người dùng tải ảnh thật. | ĐẠT |
+| **Trái tim điểm nhấn** | Trái tim silhouette phẳng màu đỏ cam san hô tươi sáng (`#FF3824` / `#FF453A`), quầng sáng đỏ nhẹ, không bóng nhựa, không lấn át chữ. | Mesh phẳng `PlaneGeometry(0.85, 0.85)` + Canvas texture silhouette tim đỏ cam san hô phát sáng mềm, dùng `MeshBasicMaterial` và `InstancedMesh` (1 draw call cho 22 tim), không bóng lộn. | ĐẠT |
+| **Góc nghiêng 3D & Chống lật ngược** | Khi xoay thấy rõ độ nghiêng 3D và các lớp che phủ lẫn nhau. Không billboard xoay toàn bộ theo camera. Mặt sau không hiển thị chữ ngược. | Các mặt phẳng có hướng tương đối đồng nhất phía trước với độ lệch tự nhiên $\pm 8^\circ$ yaw và $\pm 4.5^\circ$ pitch. Custom shader `gl_FrontFacing ? vUv : vec2(1.0 - vUv.x, vUv.y)` tự động lật UV X mặt sau, chữ luôn đọc xuôi từ cả hai chiều. | ĐẠT |
+| **Tương tác & Chuyển động** | Mở đầu với nút "Chạm để mở vũ trụ", chuyển động bung nở êm ái, xoay tự động rất chậm (1.5°/s), kéo vuốt damping 0.05 mượt mà, zoom có giới hạn, nút đặt lại góc nhìn chuẩn. | Tách biệt chuyển động camera và chuyển động vật thể, OrbitControls damping 0.05, minDistance 3.0 / maxDistance 16.0, nút "Góc chuẩn", hỗ trợ Pause và Giảm chuyển động. | ĐẠT |
+| **Tùy biến & Lưu trữ** | Nhập nhiều câu chúc, chọn ảnh máy tính lưu IndexedDB, chỉnh số lượng/kích thước/tốc độ/glow/seed, mức chất lượng di động. | Bảng điều khiển `UniverseParameterPanel` đầy đủ, lưu trữ ảnh qua `universeImageStorage.ts` (IndexedDB, không base64 localStorage, có nút xóa), hỗ trợ Responsive Mobile. | ĐẠT |

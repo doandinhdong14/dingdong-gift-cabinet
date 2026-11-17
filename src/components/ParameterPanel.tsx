@@ -1,6 +1,7 @@
 import React from 'react';
 import { RotateCcw, BookmarkPlus, Copy, Code, Sparkles, Check, AlertCircle } from 'lucide-react';
 import { AssetConfig } from '../gift-library/types';
+import { UniverseParameterPanel } from './UniverseParameterPanel';
 
 export interface ParameterPanelProps {
   config: AssetConfig;
@@ -101,9 +102,13 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
 
       {/* Accordion / Sections */}
       <div className="panel-scroll-content">
-        {/* SECTION 1: Appearance */}
-        <section className="param-section">
-          <h4 className="section-title">1. Hình dáng & Vật liệu</h4>
+        {config.assetId === 'love-universe-01' ? (
+          <UniverseParameterPanel config={config} onChange={onChange} />
+        ) : (
+          <>
+            {/* SECTION 1: Appearance */}
+            <section className="param-section">
+              <h4 className="section-title">1. Hình dáng & Vật liệu</h4>
 
           {/* Color */}
           <div className="param-row">
@@ -434,6 +439,8 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
             )}
           </div>
         </section>
+      </>
+    )}
 
         {/* SECTION 4: Quick Copy Snippets */}
         <section className="param-section">

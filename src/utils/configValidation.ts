@@ -35,7 +35,7 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
   const obj = raw as Record<string, unknown>;
 
   // Check allowed keys at root
-  const allowedRootKeys = ['schemaVersion', 'assetId', 'assetVersion', 'appearance', 'transform', 'motion'];
+  const allowedRootKeys = ['schemaVersion', 'assetId', 'assetVersion', 'appearance', 'transform', 'motion', 'universe'];
   for (const k of Object.keys(obj)) {
     if (!allowedRootKeys.includes(k)) {
       errors.push(`Trường không được hỗ trợ trong cấu hình: '${k}'`);
@@ -155,6 +155,140 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
       if (typeof sp.enabled !== 'boolean') errors.push('motion.spin.enabled phải là boolean.');
       if (!isFiniteNumber(sp.speedDegPerSecond) || !inRange(sp.speedDegPerSecond, -720, 720)) {
         errors.push('motion.spin.speedDegPerSecond phải là số hữu hạn từ -720°/s đến 720°/s.');
+      }
+    }
+  }
+
+  // universe (optional extension for love-universe-01)
+  if ('universe' in obj && obj.universe !== undefined) {
+    if (!obj.universe || typeof obj.universe !== 'object' || Array.isArray(obj.universe)) {
+      errors.push('Mục universe phải là một đối tượng hợp lệ.');
+    } else {
+      const u = obj.universe as Record<string, unknown>;
+      const allowedUniverseKeys = [
+        'wishes',
+        'textCount',
+        'photoCount',
+        'heartCount',
+        'cloudWidth',
+        'cloudHeight',
+        'cloudDepth',
+        'rotationSpeed',
+        'textColor',
+        'glowIntensity',
+        'heartColor',
+        'seed',
+        'showIntro',
+        'savedImageIds',
+        'glowEnabled',
+        'glowSpread',
+        'glowColor',
+        'textScaleFactor',
+        'photoScaleFactor',
+        'heartScaleFactor',
+        'heartRoughness',
+        'heartSpinSpeed',
+        'heartFloatAmp',
+        'driftEnabled',
+        'driftSpeed',
+        'decorations',
+      ];
+      for (const uk of Object.keys(u)) {
+        if (!allowedUniverseKeys.includes(uk)) {
+          errors.push(`Trường không được hỗ trợ trong universe: '${uk}'`);
+        }
+      }
+
+      if ('wishes' in u) {
+        if (!Array.isArray(u.wishes)) {
+          errors.push('universe.wishes phải là một mảng chuỗi câu chúc.');
+        } else if (u.wishes.some((w) => typeof w !== 'string')) {
+          errors.push('Mỗi câu chúc trong universe.wishes phải là chuỗi văn bản.');
+        }
+      }
+
+      if ('textCount' in u && (!isFiniteNumber(u.textCount) || !inRange(u.textCount, 1, 250))) {
+        errors.push('universe.textCount phải là số hữu hạn từ 1 đến 250.');
+      }
+      if ('photoCount' in u && (!isFiniteNumber(u.photoCount) || !inRange(u.photoCount, 1, 50))) {
+        errors.push('universe.photoCount phải là số hữu hạn từ 1 đến 50.');
+      }
+      if ('heartCount' in u && (!isFiniteNumber(u.heartCount) || !inRange(u.heartCount, 1, 100))) {
+        errors.push('universe.heartCount phải là số hữu hạn từ 1 đến 100.');
+      }
+      if ('cloudWidth' in u && (!isFiniteNumber(u.cloudWidth) || !inRange(u.cloudWidth, 2, 60))) {
+        errors.push('universe.cloudWidth phải là số hữu hạn từ 2 đến 60.');
+      }
+      if ('cloudHeight' in u && (!isFiniteNumber(u.cloudHeight) || !inRange(u.cloudHeight, 2, 60))) {
+        errors.push('universe.cloudHeight phải là số hữu hạn từ 2 đến 60.');
+      }
+      if ('cloudDepth' in u && (!isFiniteNumber(u.cloudDepth) || !inRange(u.cloudDepth, 2, 60))) {
+        errors.push('universe.cloudDepth phải là số hữu hạn từ 2 đến 60.');
+      }
+      if ('rotationSpeed' in u && (!isFiniteNumber(u.rotationSpeed) || !inRange(u.rotationSpeed, -60, 60))) {
+        errors.push('universe.rotationSpeed phải là số hữu hạn từ -60 đến 60 độ/giây.');
+      }
+      if ('glowIntensity' in u && (!isFiniteNumber(u.glowIntensity) || !inRange(u.glowIntensity, 0, 5))) {
+        errors.push('universe.glowIntensity phải là số hữu hạn từ 0 đến 5.');
+      }
+      if ('seed' in u && !isFiniteNumber(u.seed)) {
+        errors.push('universe.seed phải là một số nguyên hữu hạn.');
+      }
+      if ('textColor' in u && (typeof u.textColor !== 'string' || !HEX_COLOR_REGEX.test(u.textColor))) {
+        errors.push('universe.textColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('heartColor' in u && (typeof u.heartColor !== 'string' || !HEX_COLOR_REGEX.test(u.heartColor))) {
+        errors.push('universe.heartColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('showIntro' in u && typeof u.showIntro !== 'boolean') {
+        errors.push('universe.showIntro phải là boolean.');
+      }
+      if ('glowEnabled' in u && typeof u.glowEnabled !== 'boolean') {
+        errors.push('universe.glowEnabled phải là boolean.');
+      }
+      if ('glowSpread' in u && (!isFiniteNumber(u.glowSpread) || !inRange(u.glowSpread, 0, 1.5))) {
+        errors.push('universe.glowSpread phải là số hữu hạn từ 0 đến 1.5.');
+      }
+      if ('glowColor' in u && (typeof u.glowColor !== 'string' || !HEX_COLOR_REGEX.test(u.glowColor))) {
+        errors.push('universe.glowColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('textScaleFactor' in u && (!isFiniteNumber(u.textScaleFactor) || !inRange(u.textScaleFactor, 0.2, 5))) {
+        errors.push('universe.textScaleFactor phải là số hữu hạn từ 0.2 đến 5.');
+      }
+      if ('photoScaleFactor' in u && (!isFiniteNumber(u.photoScaleFactor) || !inRange(u.photoScaleFactor, 0.2, 5))) {
+        errors.push('universe.photoScaleFactor phải là số hữu hạn từ 0.2 đến 5.');
+      }
+      if ('heartScaleFactor' in u && (!isFiniteNumber(u.heartScaleFactor) || !inRange(u.heartScaleFactor, 0.2, 5))) {
+        errors.push('universe.heartScaleFactor phải là số hữu hạn từ 0.2 đến 5.');
+      }
+      if ('heartRoughness' in u && (!isFiniteNumber(u.heartRoughness) || !inRange(u.heartRoughness, 0, 1))) {
+        errors.push('universe.heartRoughness phải là số hữu hạn từ 0 đến 1.');
+      }
+      if ('heartSpinSpeed' in u && (!isFiniteNumber(u.heartSpinSpeed) || !inRange(u.heartSpinSpeed, 0, 10))) {
+        errors.push('universe.heartSpinSpeed phải là số hữu hạn từ 0 đến 10.');
+      }
+      if ('heartFloatAmp' in u && (!isFiniteNumber(u.heartFloatAmp) || !inRange(u.heartFloatAmp, 0, 1))) {
+        errors.push('universe.heartFloatAmp phải là số hữu hạn từ 0 đến 1.');
+      }
+      if ('driftEnabled' in u && typeof u.driftEnabled !== 'boolean') {
+        errors.push('universe.driftEnabled phải là boolean.');
+      }
+      if ('driftSpeed' in u && (!isFiniteNumber(u.driftSpeed) || !inRange(u.driftSpeed, 0, 10))) {
+        errors.push('universe.driftSpeed phải là số hữu hạn từ 0 đến 10.');
+      }
+      if ('decorations' in u && u.decorations !== undefined) {
+        if (!Array.isArray(u.decorations)) {
+          errors.push('universe.decorations phải là mảng.');
+        } else {
+          for (let i = 0; i < u.decorations.length; i++) {
+            const dec = u.decorations[i];
+            if (!dec || typeof dec !== 'object') {
+              errors.push(`universe.decorations[${i}] phải là đối tượng.`);
+            } else if (!['heart', 'star3d', 'giftbox'].includes((dec as Record<string, unknown>).type as string)) {
+              errors.push(`universe.decorations[${i}].type không hợp lệ.`);
+            }
+          }
+        }
       }
     }
   }
