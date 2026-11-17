@@ -15,12 +15,13 @@ export const flipUvFragmentShader = /* glsl */ `
   varying vec2 vUv;
 
   void main() {
+    if (uOpacity <= 0.001) discard;
     // When looking at the back face, horizontally invert the UV coordinate
     // so text and photos never appear reversed/backward!
     vec2 uv = gl_FrontFacing ? vUv : vec2(1.0 - vUv.x, vUv.y);
     vec4 tex = texture2D(map, uv);
     if (tex.a < 0.002) discard;
-    gl_FragColor = vec4(tex.rgb * uColor, tex.a * uOpacity);
+    gl_FragColor = vec4(tex.rgb * uColor * uOpacity, tex.a * uOpacity);
   }
 `;
 

@@ -258,7 +258,7 @@ export const TextCardMesh: React.FC<TextCardMeshProps> = ({
       rotation={item.rotation}
     >
       {/* 1. Additive luminous glow halo (behind core) */}
-      <mesh material={haloMaterial} position={[0, 0, -0.001]}>
+      <mesh material={haloMaterial} position={[0, 0, -0.001]} visible={glowEnabled && glowIntensity > 0}>
         <planeGeometry args={[planeWidth, planeHeight]} />
       </mesh>
 
