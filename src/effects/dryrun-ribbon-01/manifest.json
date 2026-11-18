@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "dryrun-ribbon-01",
+  "name": "Dải ruy băng xoay",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "object3d",
+  "renderer": "r3f",
+  "description": "Dải ruy băng 3D màu vàng kim xoay uốn lượn",
+  "tags": ["hiệu ứng", "object3d"],
+  "status": "review",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": false,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}
