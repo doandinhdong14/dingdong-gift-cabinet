@@ -1,0 +1,292 @@
+/* Rose Reveal 01 — Dedicated Styles */
+
+.rose-reveal-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  overflow: hidden;
+  user-select: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Background canvas layer */
+.rose-reveal-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  transition: opacity 0.8s ease;
+}
+
+/* UI Overlay container */
+.rose-reveal-ui-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 2.5rem;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+/* Message text and button container */
+.rose-reveal-bottom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  text-align: center;
+  max-width: 90%;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.rose-reveal-bottom-content.fade-out {
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  pointer-events: none;
+}
+
+/* Message text */
+.rose-reveal-message {
+  color: #FFE4E8;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 0 20px rgba(244, 143, 177, 0.3);
+  margin: 0;
+  padding: 0 0.5rem;
+  font-style: italic;
+}
+
+/* Interactive Pill Button */
+.rose-reveal-open-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 228, 235, 0.45);
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(244, 143, 177, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.rose-reveal-open-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 228, 235, 0.8);
+  box-shadow: 0 6px 30px rgba(244, 143, 177, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.rose-reveal-open-btn:active {
+  transform: translateY(1px) scale(0.98);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.rose-reveal-open-btn:focus-visible {
+  border-color: #FFF0F3;
+  box-shadow: 0 0 0 3px rgba(244, 143, 177, 0.5), 0 6px 28px rgba(244, 143, 177, 0.4);
+}
+
+/* Subtle pulse ring around button */
+.rose-reveal-btn-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 228, 235, 0.4);
+  animation: roseBtnPulse 2.8s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes roseBtnPulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Destination Demo Card */
+.rose-reveal-destination-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  background: radial-gradient(circle at 50% 50%, rgba(35, 12, 28, 0.7) 0%, rgba(15, 6, 14, 0.85) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 20;
+  animation: roseDestFadeIn 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: auto;
+}
+
+@keyframes roseDestFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.0);
+  }
+}
+
+.rose-reveal-card {
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  padding: 2.2rem 2rem;
+  background: rgba(38, 17, 33, 0.75);
+  border: 1px solid rgba(255, 215, 228, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(244, 143, 177, 0.2);
+  text-align: center;
+  color: #FFF0F3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rose-reveal-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(244, 143, 177, 0.3), rgba(194, 24, 91, 0.4));
+  border: 1px solid rgba(255, 228, 235, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFCDD2;
+  box-shadow: 0 0 20px rgba(244, 143, 177, 0.4);
+}
+
+.rose-reveal-card-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #FFE4E8;
+  letter-spacing: 0.02em;
+}
+
+.rose-reveal-card-body {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(255, 240, 245, 0.85);
+}
+
+.rose-reveal-replay-btn {
+  margin-top: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.6rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #F48FB1 0%, #D81B60 100%);
+  border: none;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(216, 27, 96, 0.35);
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.rose-reveal-replay-btn:hover {
+  background: linear-gradient(135deg, #F8BBD0 0%, #E91E63 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(216, 27, 96, 0.5);
+}
+
+.rose-reveal-replay-btn:active {
+  transform: translateY(1px);
+}
+
+/* Loading & Error States */
+.rose-reveal-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFE4E8;
+  font-size: 0.95rem;
+}
+
+.rose-reveal-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.5rem;
+  color: #FFCDD2;
+  text-align: center;
+}
+
+/* Top toolbar quick replay button when completed */
+.rose-reveal-quick-replay {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 25;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 228, 235, 0.3);
+  color: #FFF0F3;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.rose-reveal-quick-replay:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  .rose-reveal-btn-pulse {
+    animation: none;
+  }
+  .rose-reveal-destination-overlay {
+    animation: none;
+    transition: opacity 0.3s ease;
+  }
+  .rose-reveal-bottom-content {
+    transition: opacity 0.2s ease;
+  }
+}

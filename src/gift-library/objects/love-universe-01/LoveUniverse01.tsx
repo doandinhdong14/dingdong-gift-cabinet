@@ -111,9 +111,24 @@ export const LoveUniverse01: React.FC<LoveUniverse01Props> = ({
   const heartSpinSpeed = uCfg?.heartSpinSpeed ?? 1.0;
   const heartFloatAmp = uCfg?.heartFloatAmp ?? 0.14;
 
-  // New downward drift scene motion controls
+  // Scene-wide drift motion & global speed multiplier
   const driftEnabled = uCfg?.driftEnabled ?? true;
-  const driftSpeed = uCfg?.driftSpeed ?? 0.35;
+  const globalSpeedMultiplier = uCfg?.globalSpeedMultiplier ?? 1.0;
+
+  // Individual group drift controls
+  const textDriftEnabled = uCfg?.textDriftEnabled ?? true;
+  const textDriftSpeed = uCfg?.textDriftSpeed ?? (uCfg?.driftSpeed ?? 0.35);
+
+  const photoDriftEnabled = uCfg?.photoDriftEnabled ?? true;
+  const photoDriftSpeed = uCfg?.photoDriftSpeed ?? (uCfg?.driftSpeed ?? 0.35);
+
+  const heartDriftEnabled = uCfg?.heartDriftEnabled ?? true;
+  const heartDriftSpeed = uCfg?.heartDriftSpeed ?? (uCfg?.driftSpeed ?? 0.35);
+
+  // Effective speeds (scene units per second) = group speed * global multiplier
+  const effectiveTextSpeed = (driftEnabled && textDriftEnabled) ? textDriftSpeed * globalSpeedMultiplier : 0;
+  const effectivePhotoSpeed = (driftEnabled && photoDriftEnabled) ? photoDriftSpeed * globalSpeedMultiplier : 0;
+  const effectiveHeartSpeed = (driftEnabled && heartDriftEnabled) ? heartDriftSpeed * globalSpeedMultiplier : 0;
 
   // Decorative objects
   const decorations = uCfg?.decorations ?? [];
@@ -203,8 +218,8 @@ export const LoveUniverse01: React.FC<LoveUniverse01Props> = ({
             glowSpread={glowSpread}
             glowColor={glowColor}
             textScaleFactor={textScaleFactor}
-            driftEnabled={driftEnabled}
-            driftSpeed={driftSpeed}
+            driftEnabled={driftEnabled && textDriftEnabled && effectiveTextSpeed > 0}
+            driftSpeed={effectiveTextSpeed}
             cloudHeight={cloudHeight}
             isOpened={activeOpened}
             paused={paused}
@@ -217,8 +232,8 @@ export const LoveUniverse01: React.FC<LoveUniverse01Props> = ({
             key={item.id}
             item={item}
             photoScaleFactor={photoScaleFactor}
-            driftEnabled={driftEnabled}
-            driftSpeed={driftSpeed}
+            driftEnabled={driftEnabled && photoDriftEnabled && effectivePhotoSpeed > 0}
+            driftSpeed={effectivePhotoSpeed}
             cloudHeight={cloudHeight}
             isOpened={activeOpened}
             paused={paused}
@@ -233,8 +248,8 @@ export const LoveUniverse01: React.FC<LoveUniverse01Props> = ({
           roughness={heartRoughness}
           spinSpeed={heartSpinSpeed}
           floatAmplitude={heartFloatAmp}
-          driftEnabled={driftEnabled}
-          driftSpeed={driftSpeed}
+          driftEnabled={driftEnabled && heartDriftEnabled && effectiveHeartSpeed > 0}
+          driftSpeed={effectiveHeartSpeed}
           cloudHeight={cloudHeight}
           isOpened={activeOpened}
           paused={paused}
@@ -247,8 +262,8 @@ export const LoveUniverse01: React.FC<LoveUniverse01Props> = ({
           cloudWidth={cloudWidth}
           cloudHeight={cloudHeight}
           cloudDepth={cloudDepth}
-          driftEnabled={driftEnabled}
-          driftSpeed={driftSpeed}
+          globalDriftEnabled={driftEnabled}
+          globalSpeedMultiplier={globalSpeedMultiplier}
           isOpened={activeOpened}
           paused={paused}
         />

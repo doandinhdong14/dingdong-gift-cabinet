@@ -9,6 +9,8 @@ import { StudioLighting } from './StudioLighting';
 import { ViewerErrorBoundary } from './ViewerErrorBoundary';
 import { resolveAssetUrl } from '../utils/assetUrl';
 import { LoveUniverseIntroButton } from '../gift-library/objects/love-universe-01/LoveUniverseIntroButton';
+import { RoseRevealUI } from '../gift-library/objects/rose-reveal-01/RoseRevealUI';
+import { RoseRevealState } from '../gift-library/objects/rose-reveal-01/types';
 
 export type BackgroundMode = 'light' | 'dark' | 'checkerboard';
 export type QualityMode = 'low' | 'high';
@@ -27,17 +29,92 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
   loadComponent,
 }) => {
   const isUniverse = manifest.id === 'love-universe-01';
+  const isRose = manifest.id === 'rose-reveal-01';
 
   const [LoadedComponent, setLoadedComponent] = useState<React.ComponentType<Record<string, unknown>> | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [bgMode, setBgMode] = useState<BackgroundMode>(() => (isUniverse ? 'dark' : 'light'));
+  const [bgMode, setBgMode] = useState<BackgroundMode>(() => (isUniverse || isRose ? 'dark' : 'light'));
   const [qualityMode, setQualityMode] = useState<QualityMode>('high');
   const [webGlContextLost, setWebGlContextLost] = useState(false);
   const [isUniverseOpened, setIsUniverseOpened] = useState(() => {
     if (!isUniverse) return true;
     return config.universe?.showIntro === false;
   });
+
+  // Rose Reveal state & animation control
+  const [roseState, setRoseState] = useState<RoseRevealState>('idle');
+  const [roseBloomProgress, setRoseBloomProgress] = useState(0);
+  const [roseFlightProgress, setRoseFlightProgress] = useState(0);
+  const roseHasTriggeredRef = useRef(false);
+  const roseAnimFrameRef = useRef<number | null>(null);
+  const roseStartTimeRef = useRef<number | null>(null);
+  const isRoseTabHiddenRef = useRef(false);
+
+  useEffect(() => {
+    const handleVis = () => {
+      isRoseTabHiddenRef.current = document.hidden;
+    };
+    document.addEventListener('visibilitychange', handleVis);
+    return () => document.removeEventListener('visibilitychange', handleVis);
+  }, []);
+
+  const handleTriggerRoseBloom = useCallback(() => {
+    if (roseHasTriggeredRef.current || roseState !== 'idle') return;
+    roseHasTriggeredRef.current = true;
+    setRoseState('blooming');
+    roseStartTimeRef.current = performance.now();
+
+    const duration = (config.roseReveal?.bloomDuration || 1.8) * 1000;
+    const totalDuration = duration + 1800;
+
+    const tick = (now: number) => {
+      if (!roseStartTimeRef.current) roseStartTimeRef.current = now;
+      if (isRoseTabHiddenRef.current) {
+        roseAnimFrameRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      const elapsed = now - roseStartTimeRef.current;
+      const bNorm = Math.min(1, Math.max(0, elapsed / duration));
+      const bEased = bNorm * bNorm * (3 - 2 * bNorm);
+      setRoseBloomProgress(bEased);
+
+      const flightStart = duration * 0.70;
+      if (elapsed >= flightStart) {
+        const fNorm = Math.min(1, Math.max(0, (elapsed - flightStart) / (totalDuration - flightStart)));
+        setRoseFlightProgress(fNorm);
+      }
+
+      if (elapsed >= duration + 400 && elapsed < totalDuration) {
+        setRoseState('revealing');
+      }
+
+      if (elapsed < totalDuration) {
+        roseAnimFrameRef.current = requestAnimationFrame(tick);
+      } else {
+        setRoseState('completed');
+      }
+    };
+
+    roseAnimFrameRef.current = requestAnimationFrame(tick);
+  }, [roseState, config.roseReveal?.bloomDuration]);
+
+  const handleReplayRose = useCallback(() => {
+    if (roseAnimFrameRef.current) cancelAnimationFrame(roseAnimFrameRef.current);
+    roseHasTriggeredRef.current = false;
+    roseStartTimeRef.current = null;
+    setRoseBloomProgress(0);
+    setRoseFlightProgress(0);
+    setRoseState('idle');
+    if (controlsRef.current) controlsRef.current.reset();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (roseAnimFrameRef.current) cancelAnimationFrame(roseAnimFrameRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (isUniverse && config.universe?.showIntro === false) {
@@ -102,7 +179,16 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
   return (
     <div className={`asset-viewer-wrapper bg-mode-${bgMode}`}>
       {/* Background container (checkerboard is styled with CSS) */}
-      <div className="viewer-canvas-container" role="region" aria-label="Khung hiển thị 3D">
+      <div
+        className="viewer-canvas-container"
+        role="region"
+        aria-label="Khung hiển thị 3D"
+        style={
+          isRose && config.roseReveal?.backgroundColor
+            ? { background: `radial-gradient(ellipse at 50% 35%, ${config.roseReveal.backgroundColor} 0%, #0d040c 100%)` }
+            : undefined
+        }
+      >
         {webGlContextLost ? (
           <div className="viewer-fallback-container">
             <div className="fallback-badge">
@@ -128,7 +214,7 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
         ) : (
           <ViewerErrorBoundary fallbackSvgUrl={resolveAssetUrl(manifest.fallback)}>
             <Canvas
-              camera={{ position: isUniverse ? [0, 0, 9.2] : [0, 0, 4.5], fov: 45 }}
+              camera={{ position: isUniverse ? [0, 0, 9.2] : isRose ? [0, 1.1, 6.2] : [0, 0, 4.5], fov: 45 }}
               dpr={dpr}
               gl={{
                 alpha: true,
@@ -148,7 +234,7 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
                 domEl.addEventListener('webglcontextrestored', handleContextRestored, false);
               }}
             >
-              {!isUniverse && <StudioLighting />}
+              {!isUniverse && !isRose && <StudioLighting />}
 
               <Suspense fallback={null}>
                 {LoadedComponent && (
@@ -158,6 +244,20 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
                       paused={isPaused}
                       quality={qualityMode}
                       isOpened={isUniverseOpened}
+                    />
+                  ) : isRose ? (
+                    <LoadedComponent
+                      config={config}
+                      paused={isPaused}
+                      quality={qualityMode}
+                      state={roseState}
+                      bloomProgress={
+                        config.roseReveal?.manualBloomProgress !== undefined && config.roseReveal.manualBloomProgress >= 0
+                          ? config.roseReveal.manualBloomProgress
+                          : roseBloomProgress
+                      }
+                      flightProgress={roseFlightProgress}
+                      onTriggerBloom={handleTriggerRoseBloom}
                     />
                   ) : (
                     <MotionRig
@@ -180,6 +280,7 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
                 enablePan={false}
                 enableDamping={true}
                 dampingFactor={0.05}
+                enabled={!isRose || config.roseReveal?.inspectionMode === true}
                 minDistance={isUniverse ? 3.5 : 2.5}
                 maxDistance={isUniverse ? 24.0 : 8.0}
                 makeDefault
@@ -191,6 +292,18 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
         {/* Intro Touch Button Overlay for Love Universe */}
         {isUniverse && !isUniverseOpened && (
           <LoveUniverseIntroButton onOpen={() => setIsUniverseOpened(true)} />
+        )}
+
+        {/* Overlay for Rose Reveal */}
+        {isRose && (
+          <RoseRevealUI
+            state={roseState}
+            messageText={config.roseReveal?.messageText || 'Có một điều nhỏ bé dành cho bạn'}
+            buttonText={config.roseReveal?.buttonText || 'Chạm để mở quà ♡'}
+            destinationTarget={config.roseReveal?.destinationTarget || 'demo-card'}
+            onTriggerBloom={handleTriggerRoseBloom}
+            onReplay={handleReplayRose}
+          />
         )}
       </div>
 

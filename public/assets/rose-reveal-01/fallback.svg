@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGrad2" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#2D1527" />
+      <stop offset="60%" stop-color="#190B17" />
+      <stop offset="100%" stop-color="#0E050D" />
+    </radialGradient>
+    <linearGradient id="stemGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B6948" />
+      <stop offset="40%" stop-color="#5E966C" />
+      <stop offset="100%" stop-color="#2D5237" />
+    </linearGradient>
+    <linearGradient id="leafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6DA87C" />
+      <stop offset="60%" stop-color="#4A7E56" />
+      <stop offset="100%" stop-color="#2D5237" />
+    </linearGradient>
+    <radialGradient id="petalGlow2" cx="50%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#FFF5F7" />
+      <stop offset="40%" stop-color="#F8BBD0" />
+      <stop offset="80%" stop-color="#E91E63" />
+      <stop offset="100%" stop-color="#AD1457" />
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgGrad2)" />
+  <circle cx="120" cy="110" r="1.5" fill="#FFE4E8" opacity="0.6" />
+  <circle cx="280" cy="95" r="2" fill="#FFE4E8" opacity="0.8" />
+  <circle cx="310" cy="250" r="2.5" fill="#FFE4E8" opacity="0.7" />
+  <path d="M 200 190 Q 203 260 198 320 T 201 370" fill="none" stroke="url(#stemGrad2)" stroke-width="7" stroke-linecap="round" />
+  <path d="M 202 240 Q 235 230 250 215 Q 235 255 201 248 Z" fill="url(#leafGrad2)" />
+  <path d="M 199 285 Q 165 280 148 298 Q 168 310 198 292 Z" fill="url(#leafGrad2)" />
+  <path d="M 192 192 Q 170 205 165 225 Q 180 210 196 195 Z" fill="#4A7E56" />
+  <path d="M 208 192 Q 230 205 235 225 Q 220 210 204 195 Z" fill="#4A7E56" />
+  <ellipse cx="200" cy="192" rx="14" ry="7" fill="#3B6948" />
+  <path d="M 155 155 C 145 110 185 100 200 120 C 215 100 255 110 245 155 C 235 185 215 195 200 195 C 185 195 165 185 155 155 Z" fill="url(#petalGlow2)" />
+  <text x="200" y="380" text-anchor="middle" fill="#FFE4E8" font-size="14" font-family="system-ui, sans-serif">Bông hồng mở quà</text>
+</svg>

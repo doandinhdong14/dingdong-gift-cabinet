@@ -8,10 +8,10 @@ import {
 } from '../src/gift-library/registry';
 
 describe('Gift Library Registry Contract', () => {
-  it('should register both heart-01 and love-universe-01 in product registry', () => {
-    expect(PRODUCT_REGISTRY).toHaveLength(2);
+  it('should register heart-01, love-universe-01, and rose-reveal-01 in product registry', () => {
+    expect(PRODUCT_REGISTRY).toHaveLength(3);
     const productAssets = getProductAssets();
-    expect(productAssets).toHaveLength(2);
+    expect(productAssets).toHaveLength(3);
 
     // Heart-01
     const heart = productAssets.find((a) => a.manifest.id === 'heart-01');
@@ -29,6 +29,15 @@ describe('Gift Library Registry Contract', () => {
     expect(universe?.manifest.version).toBe('0.1.0');
     expect(universe?.manifest.category).toBe('Trang trí');
     expect(universe?.manifest.kind).toBe('3d');
+
+    // RoseReveal-01
+    const rose = productAssets.find((a) => a.manifest.id === 'rose-reveal-01');
+    expect(rose).toBeDefined();
+    expect(rose?.manifest.name).toBe('Bông hồng mở quà');
+    expect(rose?.manifest.status).toBe('approved');
+    expect(rose?.manifest.version).toBe('1.0.0');
+    expect(rose?.manifest.category).toBe('Hộp quà');
+    expect(rose?.manifest.kind).toBe('3d');
   });
 
   it('should provide heart-01 with 3 default presets per spec', () => {
@@ -59,24 +68,25 @@ describe('Gift Library Registry Contract', () => {
     );
   });
 
-  it('should retrieve heart-01, love-universe-01, and dev fixture by ID', () => {
+  it('should retrieve heart-01, love-universe-01, rose-reveal-01, and dev fixture by ID', () => {
     expect(getAssetById('heart-01')).toBeDefined();
     expect(getAssetById('love-universe-01')).toBeDefined();
+    expect(getAssetById('rose-reveal-01')).toBeDefined();
     expect(getAssetById('dev-box-fixture')).toBeDefined();
     expect(getAssetById('non-existent-asset')).toBeUndefined();
   });
 
   it('should accurately compute category counts strictly from real registry', () => {
     const countsWithoutFav = getCategoryCounts([]);
-    expect(countsWithoutFav['Tất cả']).toBe(2);
+    expect(countsWithoutFav['Tất cả']).toBe(3);
     expect(countsWithoutFav['Trái tim']).toBe(1);
     expect(countsWithoutFav['Phong bì']).toBe(0);
-    expect(countsWithoutFav['Hộp quà']).toBe(0);
+    expect(countsWithoutFav['Hộp quà']).toBe(1);
     expect(countsWithoutFav['Máy bay']).toBe(0);
     expect(countsWithoutFav['Trang trí']).toBe(1);
     expect(countsWithoutFav['Yêu thích']).toBe(0);
 
-    const countsWithFav = getCategoryCounts(['love-universe-01']);
-    expect(countsWithFav['Yêu thích']).toBe(1);
+    const countsWithFav = getCategoryCounts(['love-universe-01', 'rose-reveal-01']);
+    expect(countsWithFav['Yêu thích']).toBe(2);
   });
 });

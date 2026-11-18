@@ -11,6 +11,7 @@
  */
 
 import { UniverseElementLayout, UniverseLayoutResult } from './types';
+import { generateStratifiedHeights } from './motionUtils';
 
 /**
  * Fast 32-bit deterministic Mulberry32 PRNG
@@ -96,26 +97,22 @@ export function generateUniverseLayout({
   };
 
   const halfW = cloudWidth * 0.5;
-  const halfH = cloudHeight * 0.5;
   const halfD = cloudDepth * 0.5;
 
   // 1. Generate Photo Planes (12–20 items, distributed across height and depth)
   const actualPhotoCount = Math.max(1, Math.min(photoCount, 40));
+  const photoHeights = generateStratifiedHeights(actualPhotoCount, cloudHeight, rng, 2.0, 0.70);
   for (let i = 0; i < actualPhotoCount; i++) {
     const layerRand = rng();
     const layerType: 'near' | 'mid' | 'far' = layerRand < 0.22 ? 'near' : layerRand < 0.72 ? 'mid' : 'far';
 
     let bestX = 0;
-    let bestY = 0;
+    const bestY = photoHeights[i];
     let bestZ = 0;
     let attempts = 0;
 
     while (attempts < 12) {
       attempts++;
-      // Stratified vertical placement with slight jitter
-      const normY = actualPhotoCount > 1 ? (i / (actualPhotoCount - 1)) - 0.5 : 0;
-      const y = normY * (halfH * 1.6) + randRange(-0.4, 0.4);
-
       let x = 0;
       let z = 0;
 
@@ -135,10 +132,9 @@ export function generateUniverseLayout({
       }
 
       bestX = x;
-      bestY = y;
       bestZ = z;
 
-      if (!isTooClose(x, y, z, 0.65)) break;
+      if (!isTooClose(x, bestY, z, 0.65)) break;
     }
 
     placedAnchors.push({ x: bestX, y: bestY, z: bestZ, r: 0.55 });
@@ -172,25 +168,19 @@ export function generateUniverseLayout({
 
   // 2. Generate Text Wish Items (100–160 items, rich layered space)
   const actualTextCount = Math.max(1, Math.min(textCount, 220));
+  const textHeights = generateStratifiedHeights(actualTextCount, cloudHeight, rng, 2.0, 0.75);
   for (let i = 0; i < actualTextCount; i++) {
     const layerRand = rng();
     // Near ~18%, Mid ~47%, Far ~35%
     const layerType: 'near' | 'mid' | 'far' = layerRand < 0.18 ? 'near' : layerRand < 0.65 ? 'mid' : 'far';
 
     let bestX = 0;
-    let bestY = 0;
+    const bestY = textHeights[i];
     let bestZ = 0;
     let attempts = 0;
 
-    while (attempts < 30) {
+    while (attempts < 20) {
       attempts++;
-      // Stratified vertical distribution with flexibility on later attempts
-      const normY = actualTextCount > 1 ? (i / (actualTextCount - 1)) - 0.5 : 0;
-      const jitterRange = attempts > 15 ? halfH * 0.9 : 0.55;
-      const y = attempts > 20
-        ? randRange(-halfH * 0.92, halfH * 0.92)
-        : normY * (halfH * 1.8) + randRange(-jitterRange, jitterRange);
-
       let x = 0;
       let z = 0;
 
@@ -209,10 +199,9 @@ export function generateUniverseLayout({
       }
 
       bestX = x;
-      bestY = y;
       bestZ = z;
 
-      if (!isTooClose(x, y, z, 0.42, true)) break;
+      if (!isTooClose(x, bestY, z, 0.42, true)) break;
     }
 
     placedAnchors.push({ x: bestX, y: bestY, z: bestZ, r: 0.32 });
@@ -246,12 +235,12 @@ export function generateUniverseLayout({
 
   // 3. Generate Floating Coral-Red Silhouette Hearts (15–25 items)
   const actualHeartCount = Math.max(1, Math.min(heartCount, 60));
+  const heartHeights = generateStratifiedHeights(actualHeartCount, cloudHeight, rng, 2.0, 0.75);
   for (let i = 0; i < actualHeartCount; i++) {
     const layerRand = rng();
     const layerType: 'near' | 'mid' | 'far' = layerRand < 0.25 ? 'near' : layerRand < 0.75 ? 'mid' : 'far';
 
-    const normY = actualHeartCount > 1 ? (i / (actualHeartCount - 1)) - 0.5 : 0;
-    const y = normY * (halfH * 1.6) + randRange(-0.35, 0.35);
+    const y = heartHeights[i];
 
     let x = 0;
     let z = 0;

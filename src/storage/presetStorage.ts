@@ -1,5 +1,6 @@
 import { Preset, AssetConfig } from '../gift-library/types';
 import { validatePreset } from '../utils/configValidation';
+import { migrateAssetConfig } from './migrations';
 
 const STORAGE_NAMESPACE = 'dingdong-gift-cabinet:v1';
 const PRESET_KEY_PREFIX = `${STORAGE_NAMESPACE}:presets:`;
@@ -80,7 +81,17 @@ export function loadUserPresets(assetId: string): { presets: Preset[]; warning?:
     const errors: string[] = [];
 
     parsed.forEach((item, index) => {
-      const res = validatePreset(item);
+      let candidate = item;
+      if (candidate && typeof candidate === 'object' && candidate.config) {
+        const mig = migrateAssetConfig(candidate.config);
+        if (mig.config) {
+          candidate = {
+            ...candidate,
+            config: mig.config,
+          };
+        }
+      }
+      const res = validatePreset(candidate);
       if (res.valid && res.data) {
         validPresets.push(res.data);
       } else {

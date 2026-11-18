@@ -89,6 +89,11 @@ export const HeartsField: React.FC<HeartsFieldProps> = ({
     const rawProgress = currentProgressRef.current;
     const mesh = instancedMeshRef.current;
 
+    // Continuous downward drift distance accumulation (once per frame, no jump on speed change)
+    if (!paused && driftEnabled) {
+      driftOffsetRef.current += driftSpeed * safeDelta;
+    }
+
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const axes = spinAxes[i] || { axisX: 0.7, axisY: 0.9, axisZ: 0.4 };
@@ -96,11 +101,6 @@ export const HeartsField: React.FC<HeartsFieldProps> = ({
       const stagger = (item.phase / (Math.PI * 2)) * 0.25;
       const progress = Math.max(0, Math.min(1, (rawProgress - stagger) / (1 - stagger)));
       const ease = 1 - Math.pow(1 - progress, 3);
-
-      // Continuous downward drift distance accumulation (no jump on speed change)
-      if (!paused && driftEnabled) {
-        driftOffsetRef.current += driftSpeed * safeDelta;
-      }
 
       // Downward drift + wrap
       const wrappedY = wrapY(item.position[1], driftOffsetRef.current, cloudHeight);

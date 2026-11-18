@@ -61,6 +61,13 @@ export const loveUniverse01DefaultConfig: AssetConfig = {
     heartFloatAmp: 0.14,
     driftEnabled: true,
     driftSpeed: 0.35,
+    globalSpeedMultiplier: 1.0,
+    textDriftEnabled: true,
+    textDriftSpeed: 0.35,
+    photoDriftEnabled: true,
+    photoDriftSpeed: 0.35,
+    heartDriftEnabled: true,
+    heartDriftSpeed: 0.35,
     decorations: [],
   },
 };

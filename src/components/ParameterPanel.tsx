@@ -2,6 +2,7 @@ import React from 'react';
 import { RotateCcw, BookmarkPlus, Copy, Code, Sparkles, Check, AlertCircle } from 'lucide-react';
 import { AssetConfig } from '../gift-library/types';
 import { UniverseParameterPanel } from './UniverseParameterPanel';
+import { RoseParameterPanel } from '../gift-library/objects/rose-reveal-01/RoseParameterPanel';
 
 export interface ParameterPanelProps {
   config: AssetConfig;
@@ -104,6 +105,8 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
       <div className="panel-scroll-content">
         {config.assetId === 'love-universe-01' ? (
           <UniverseParameterPanel config={config} onChange={onChange} />
+        ) : config.assetId === 'rose-reveal-01' ? (
+          <RoseParameterPanel config={config} onChange={onChange} />
         ) : (
           <>
             {/* SECTION 1: Appearance */}

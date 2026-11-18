@@ -28,6 +28,137 @@ export interface UniverseParameterPanelProps {
   onChange: (updated: AssetConfig) => void;
 }
 
+interface GroupFallSpeedControlProps {
+  label: string;
+  enabled: boolean;
+  onToggleEnabled: (enabled: boolean) => void;
+  speed: number;
+  onChangeSpeed: (speed: number) => void;
+  onResetDefault: () => void;
+  globalMultiplier: number;
+  globalDriftEnabled?: boolean;
+  defaultSpeed?: number;
+}
+
+const GroupFallSpeedControl: React.FC<GroupFallSpeedControlProps> = ({
+  label,
+  enabled,
+  onToggleEnabled,
+  speed,
+  onChangeSpeed,
+  onResetDefault,
+  globalMultiplier,
+  globalDriftEnabled = true,
+  defaultSpeed = 0.35,
+}) => {
+  const effectiveSpeed = (globalDriftEnabled && enabled) ? speed * globalMultiplier : 0;
+  const isZeroOrStopped = !globalDriftEnabled || !enabled || speed === 0 || globalMultiplier === 0;
+
+  return (
+    <div
+      className="group-fall-speed-box"
+      style={{
+        background: '#F8FAFC',
+        border: '1px solid #E2E8F0',
+        borderRadius: '8px',
+        padding: '10px 12px',
+        marginTop: '10px',
+        marginBottom: '6px',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <label className="checkbox-control-label" style={{ fontWeight: 600, fontSize: '0.84rem' }}>
+          <input
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => onToggleEnabled(e.target.checked)}
+          />
+          <span>Bật rơi ({label})</span>
+        </label>
+
+        <button
+          type="button"
+          className="btn-text-action"
+          onClick={onResetDefault}
+          title={`Khôi phục tốc độ rơi mặc định (${defaultSpeed.toFixed(2)} u/s)`}
+          style={{ fontSize: '0.74rem', padding: '2px 6px', display: 'flex', alignItems: 'center', gap: '3px' }}
+        >
+          <RotateCcw size={11} /> Mặc định ({defaultSpeed.toFixed(2)})
+        </button>
+      </div>
+
+      <div className="param-row" style={{ marginBottom: 0 }}>
+        <div className="param-label-group" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+          <span className="param-label" style={{ fontSize: '0.8rem', color: '#475569' }}>
+            Tốc độ rơi (0 – 3.0 u/s)
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <input
+              type="number"
+              min="0"
+              max="3.0"
+              step="0.05"
+              value={Number(speed.toFixed(2))}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                onChangeSpeed(isNaN(val) ? 0 : Math.max(0, Math.min(3.0, val)));
+              }}
+              style={{
+                width: '60px',
+                padding: '2px 6px',
+                fontSize: '0.82rem',
+                borderRadius: '4px',
+                border: '1px solid #CBD5E1',
+                textAlign: 'right',
+              }}
+            />
+            <span className="param-value-tag" style={{ fontSize: '0.78rem' }}>
+              {speed.toFixed(2)} u/s
+            </span>
+          </div>
+        </div>
+
+        <div className="slider-container">
+          <input
+            type="range"
+            min="0"
+            max="3.0"
+            step="0.05"
+            value={speed}
+            onChange={(e) => onChangeSpeed(parseFloat(e.target.value))}
+            className="param-slider"
+          />
+          <div className="slider-limits" style={{ fontSize: '0.72rem' }}>
+            <span>0 (Đứng yên)</span>
+            <span>{defaultSpeed.toFixed(2)} (Mặc định)</span>
+            <span>3.0 (Rất nhanh)</span>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '4px', fontSize: '0.74rem', color: isZeroOrStopped ? '#EF4444' : '#059669' }}>
+          {isZeroOrStopped ? (
+            <span>
+              ⏸ <em>Đang đứng yên (không rơi)</em>
+              {!enabled
+                ? ' — Đã tắt Bật rơi'
+                : speed === 0
+                ? ' — Tốc độ = 0'
+                : !globalDriftEnabled
+                ? ' — Rơi toàn cảnh đang tắt'
+                : ' — Hệ số chung = 0'}
+            </span>
+          ) : (
+            <span>
+              ✓ Tốc độ thực tế: <strong>{effectiveSpeed.toFixed(2)} u/s</strong>
+              {globalMultiplier !== 1.0 && ` (${speed.toFixed(2)} × ${globalMultiplier.toFixed(2)}x hệ số chung)`}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
   config,
   onChange,
@@ -57,6 +188,13 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
     heartFloatAmp: 0.14,
     driftEnabled: true,
     driftSpeed: 0.35,
+    globalSpeedMultiplier: 1.0,
+    textDriftEnabled: true,
+    textDriftSpeed: 0.35,
+    photoDriftEnabled: true,
+    photoDriftSpeed: 0.35,
+    heartDriftEnabled: true,
+    heartDriftSpeed: 0.35,
     decorations: [],
     ...(config.universe || {}),
   };
@@ -75,6 +213,8 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
   const [newDecoColor, setNewDecoColor] = useState('#FFD700');
   const [newDecoScale, setNewDecoScale] = useState(1.0);
   const [newDecoSpeed, setNewDecoSpeed] = useState(1.0);
+  const [newDecoDriftEnabled, setNewDecoDriftEnabled] = useState(true);
+  const [newDecoDriftSpeed, setNewDecoDriftSpeed] = useState(0.35);
 
   // Load photos from IndexedDB on mount
   useEffect(() => {
@@ -228,11 +368,20 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
       scale: newDecoScale,
       spinSpeed: newDecoSpeed,
       enabled: true,
+      driftEnabled: newDecoDriftEnabled,
+      driftSpeed: newDecoDriftSpeed,
     };
 
     const updated = [...(u.decorations || []), newGroup];
     updateUniverse({ decorations: updated });
     setShowAddDeco(false);
+  };
+
+  const handleUpdateDeco = (id: string, patch: Partial<UniverseDecorationGroup>) => {
+    const updated = (u.decorations || []).map((d) =>
+      d.id === id ? { ...d, ...patch } : d
+    );
+    updateUniverse({ decorations: updated });
   };
 
   const handleToggleDeco = (id: string) => {
@@ -306,6 +455,19 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Falling Speed Control for Text */}
+        <GroupFallSpeedControl
+          label="Chữ"
+          enabled={u.textDriftEnabled ?? true}
+          onToggleEnabled={(en) => updateUniverse({ textDriftEnabled: en })}
+          speed={u.textDriftSpeed ?? 0.35}
+          onChangeSpeed={(sp) => updateUniverse({ textDriftSpeed: sp })}
+          onResetDefault={() => updateUniverse({ textDriftEnabled: true, textDriftSpeed: 0.35 })}
+          globalMultiplier={u.globalSpeedMultiplier ?? 1.0}
+          globalDriftEnabled={u.driftEnabled ?? true}
+          defaultSpeed={0.35}
+        />
       </section>
 
       {/* SECTION 2: ÁNH SÁNG CHỮ (TEXT LIGHTING) */}
@@ -340,11 +502,33 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
 
         {/* Glow Intensity 0 - 3 */}
         <div className="param-row">
-          <div className="param-label-group">
+          <div className="param-label-group" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
             <label htmlFor="param-glow-intensity" className="param-label">
-              Cường độ phát sáng hào quang (0 - 3)
+              Cường độ phát sáng hào quang (0 – 3.0)
             </label>
-            <span className="param-value-tag">{(u.glowIntensity ?? 1.0).toFixed(2)}x</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <input
+                id="param-glow-intensity-num"
+                type="number"
+                min="0"
+                max="3.0"
+                step="0.05"
+                value={Number((u.glowIntensity ?? 1.0).toFixed(2))}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  updateUniverse({ glowIntensity: isNaN(val) ? 0 : Math.max(0, Math.min(3.0, val)) });
+                }}
+                style={{
+                  width: '60px',
+                  padding: '2px 6px',
+                  fontSize: '0.82rem',
+                  borderRadius: '4px',
+                  border: '1px solid #CBD5E1',
+                  textAlign: 'right',
+                }}
+              />
+              <span className="param-value-tag">{(u.glowIntensity ?? 1.0).toFixed(2)}x</span>
+            </div>
           </div>
           <div className="slider-container">
             <input
@@ -358,10 +542,40 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
               className="param-slider"
             />
             <div className="slider-limits">
-              <span>0 (Tắt quầng sáng)</span>
-              <span>1.0 (Chuẩn video)</span>
-              <span>3.0 (Rực rỡ)</span>
+              <span>0 (Tắt)</span>
+              <span>1.0 (Vừa)</span>
+              <span>2.0 (Mạnh)</span>
+              <span>3.0 (Rất mạnh)</span>
             </div>
+          </div>
+          <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
+            {[
+              { val: 0, label: '0 (Tắt)' },
+              { val: 0.25, label: '0.25 (Rất nhẹ)' },
+              { val: 0.5, label: '0.5 (Nhẹ)' },
+              { val: 1.0, label: '1.0 (Vừa)' },
+              { val: 2.0, label: '2.0 (Mạnh)' },
+              { val: 3.0, label: '3.0 (Rất mạnh)' },
+            ].map((preset) => (
+              <button
+                key={preset.val}
+                type="button"
+                className="btn-text-action"
+                onClick={() => updateUniverse({ glowIntensity: preset.val, glowEnabled: preset.val > 0 ? true : u.glowEnabled })}
+                style={{
+                  fontSize: '0.72rem',
+                  padding: '2px 6px',
+                  background: Math.abs((u.glowIntensity ?? 1.0) - preset.val) < 0.02 ? '#FEF3C7' : '#F1F5F9',
+                  border: Math.abs((u.glowIntensity ?? 1.0) - preset.val) < 0.02 ? '1px solid #F59E0B' : '1px solid #CBD5E1',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: Math.abs((u.glowIntensity ?? 1.0) - preset.val) < 0.02 ? 600 : 400,
+                  color: Math.abs((u.glowIntensity ?? 1.0) - preset.val) < 0.02 ? '#B45309' : '#475569',
+                }}
+              >
+                {preset.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -580,12 +794,25 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
             />
           </div>
         </div>
+
+        {/* Falling Speed Control for Heart */}
+        <GroupFallSpeedControl
+          label="Trái tim 3D"
+          enabled={u.heartDriftEnabled ?? true}
+          onToggleEnabled={(en) => updateUniverse({ heartDriftEnabled: en })}
+          speed={u.heartDriftSpeed ?? 0.35}
+          onChangeSpeed={(sp) => updateUniverse({ heartDriftSpeed: sp })}
+          onResetDefault={() => updateUniverse({ heartDriftEnabled: true, heartDriftSpeed: 0.35 })}
+          globalMultiplier={u.globalSpeedMultiplier ?? 1.0}
+          globalDriftEnabled={u.driftEnabled ?? true}
+          defaultSpeed={0.35}
+        />
       </section>
 
-      {/* SECTION 4: CHUYỂN ĐỘNG TOÀN CẢNH (DOWNWARD DRIFT) */}
+      {/* SECTION 4: CHUYỂN ĐỘNG TOÀN CẢNH & HỆ SỐ CHUNG */}
       <section className="param-section" style={{ borderLeft: '3px solid #10B981' }}>
         <h4 className="section-title">
-          <Compass size={16} /> 4. Chuyển động toàn cảnh (Trôi xuống liên tục)
+          <Compass size={16} /> 4. Chuyển động toàn cảnh
         </h4>
 
         {/* Toggle Drift */}
@@ -597,47 +824,64 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
               onChange={(e) => updateUniverse({ driftEnabled: e.target.checked })}
             />
             <span className="checkbox-text">
-              <strong>Bật chuyển động trôi xuống liên tục</strong> (Chữ, ảnh & vật thể rơi êm ái)
+              <strong>Bật rơi toàn cảnh</strong> (Cho phép các nhóm vật thể rơi theo tốc độ đã cấu hình)
             </span>
           </label>
         </div>
 
-        {/* Drift Speed (Slider + Number input side by side) */}
+        {/* Global Speed Multiplier (Slider + Number input side by side) */}
         <div className="param-row">
           <div className="param-label-group">
-            <label htmlFor="param-drift-speed" className="param-label">
-              Vận tốc trôi xuống (đơn vị scene/giây)
+            <label htmlFor="param-global-speed-multiplier" className="param-label">
+              Hệ số tốc độ chung (0 – 2.0x, mặc định 1.0x)
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <input
+                id="param-global-speed-multiplier-num"
                 type="number"
                 min="0"
                 max="2.0"
                 step="0.05"
-                value={u.driftSpeed ?? 0.35}
-                onChange={(e) => updateUniverse({ driftSpeed: Math.max(0, Math.min(2.0, parseFloat(e.target.value) || 0)) })}
-                style={{ width: '64px', padding: '3px 6px', fontSize: '0.82rem', borderRadius: '4px', border: '1px solid #CBD5E1' }}
+                value={Number((u.globalSpeedMultiplier ?? 1.0).toFixed(2))}
+                onChange={(e) =>
+                  updateUniverse({
+                    globalSpeedMultiplier: Math.max(0, Math.min(2.0, parseFloat(e.target.value) || 0)),
+                  })
+                }
+                style={{ width: '64px', padding: '3px 6px', fontSize: '0.82rem', borderRadius: '4px', border: '1px solid #CBD5E1', textAlign: 'right' }}
               />
-              <span className="param-value-tag">{(u.driftSpeed ?? 0.35).toFixed(2)} u/s</span>
+              <span className="param-value-tag">{(u.globalSpeedMultiplier ?? 1.0).toFixed(2)}x</span>
+              <button
+                type="button"
+                className="btn-text-action"
+                onClick={() => updateUniverse({ globalSpeedMultiplier: 1.0 })}
+                title="Khôi phục hệ số tốc độ chung về 1.0x"
+                style={{ fontSize: '0.75rem', padding: '2px 6px', display: 'flex', alignItems: 'center', gap: '3px' }}
+              >
+                <RotateCcw size={11} /> 1.0x
+              </button>
             </div>
           </div>
           <div className="slider-container">
             <input
-              id="param-drift-speed"
+              id="param-global-speed-multiplier"
               type="range"
               min="0"
               max="2.0"
               step="0.05"
-              value={u.driftSpeed ?? 0.35}
-              onChange={(e) => updateUniverse({ driftSpeed: parseFloat(e.target.value) })}
+              value={u.globalSpeedMultiplier ?? 1.0}
+              onChange={(e) => updateUniverse({ globalSpeedMultiplier: parseFloat(e.target.value) })}
               className="param-slider"
             />
             <div className="slider-limits">
-              <span>0 (Dừng trôi)</span>
-              <span>0.35 (Mẫu êm)</span>
-              <span>2.0 (Nhanh)</span>
+              <span>0x (Dừng rơi toàn cảnh)</span>
+              <span>1.0x (Mặc định)</span>
+              <span>2.0x (Gấp đôi)</span>
             </div>
           </div>
+          <span className="param-help-text">
+            Tốc độ rơi thực tế = tốc độ riêng của từng nhóm × hệ số chung. Nhóm đã tắt rơi hoặc có tốc độ = 0 vẫn đứng yên dù hệ số chung thay đổi.
+          </span>
         </div>
 
         {/* Rotation Speed */}
@@ -752,7 +996,7 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
               <div>
                 <label className="param-label">Kích thước (Hệ số)</label>
                 <input
@@ -780,6 +1024,44 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
               </div>
             </div>
 
+            {/* Falling speed initial settings for new decoration */}
+            <div style={{ background: '#FFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <label className="checkbox-control-label" style={{ fontSize: '0.82rem', fontWeight: 600 }}>
+                  <input
+                    type="checkbox"
+                    checked={newDecoDriftEnabled}
+                    onChange={(e) => setNewDecoDriftEnabled(e.target.checked)}
+                  />
+                  <span>Bật rơi khi khởi tạo</span>
+                </label>
+                <span className="param-value-tag" style={{ fontSize: '0.76rem' }}>
+                  {newDecoDriftSpeed.toFixed(2)} u/s
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="range"
+                  min="0"
+                  max="3.0"
+                  step="0.05"
+                  value={newDecoDriftSpeed}
+                  onChange={(e) => setNewDecoDriftSpeed(parseFloat(e.target.value))}
+                  className="param-slider"
+                  style={{ flex: 1 }}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="3.0"
+                  step="0.05"
+                  value={Number(newDecoDriftSpeed.toFixed(2))}
+                  onChange={(e) => setNewDecoDriftSpeed(Math.max(0, Math.min(3.0, parseFloat(e.target.value) || 0)))}
+                  style={{ width: '54px', padding: '2px 4px', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid #CBD5E1', textAlign: 'right' }}
+                />
+              </div>
+            </div>
+
             <button
               type="button"
               className="btn-seed-random"
@@ -793,57 +1075,78 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
 
         {/* List of active decoration groups */}
         {(u.decorations || []).length > 0 ? (
-          <div className="deco-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {(u.decorations || []).map((deco) => (
-              <div
-                key={deco.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '8px 12px',
-                  background: '#F1F5F9',
-                  borderRadius: '6px',
-                  border: '1px solid #E2E8F0',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span
-                    style={{
-                      width: '14px',
-                      height: '14px',
-                      borderRadius: '50%',
-                      background: deco.color,
-                      display: 'inline-block',
-                      boxShadow: '0 0 4px rgba(0,0,0,0.2)',
-                    }}
-                  />
-                  <strong style={{ fontSize: '0.85rem' }}>{deco.name}</strong>
-                  <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                    ({deco.count} vật thể, scale {deco.scale}x)
-                  </span>
-                </div>
+          <div className="deco-list" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(u.decorations || []).map((deco) => {
+              const decoDefaultSpeed = deco.type === 'giftbox' ? 0.25 : 0.35;
+              const decoCurrentSpeed = deco.driftSpeed ?? decoDefaultSpeed;
+              const decoCurrentEnabled = deco.driftEnabled ?? true;
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label style={{ fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                    <input
-                      type="checkbox"
-                      checked={deco.enabled}
-                      onChange={() => handleToggleDeco(deco.id)}
-                    />
-                    <span>{deco.enabled ? 'Bật' : 'Tắt'}</span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteDeco(deco.id)}
-                    style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '2px' }}
-                    title="Xóa nhóm vật thể này"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+              return (
+                <div
+                  key={deco.id}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '10px 12px',
+                    background: '#F1F5F9',
+                    borderRadius: '8px',
+                    border: '1px solid #E2E8F0',
+                    gap: '6px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span
+                        style={{
+                          width: '14px',
+                          height: '14px',
+                          borderRadius: '50%',
+                          background: deco.color,
+                          display: 'inline-block',
+                          boxShadow: '0 0 4px rgba(0,0,0,0.2)',
+                        }}
+                      />
+                      <strong style={{ fontSize: '0.88rem' }}>{deco.name}</strong>
+                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                        ({deco.count} vật thể, scale {deco.scale}x, xoay {deco.spinSpeed}x)
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label style={{ fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={deco.enabled}
+                          onChange={() => handleToggleDeco(deco.id)}
+                        />
+                        <span>{deco.enabled ? 'Hiển thị' : 'Ẩn'}</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDeco(deco.id)}
+                        style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '2px' }}
+                        title="Xóa nhóm vật thể này"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Group-specific falling controls */}
+                  <GroupFallSpeedControl
+                    label={deco.name}
+                    enabled={decoCurrentEnabled}
+                    onToggleEnabled={(en) => handleUpdateDeco(deco.id, { driftEnabled: en })}
+                    speed={decoCurrentSpeed}
+                    onChangeSpeed={(sp) => handleUpdateDeco(deco.id, { driftSpeed: sp })}
+                    onResetDefault={() => handleUpdateDeco(deco.id, { driftEnabled: true, driftSpeed: decoDefaultSpeed })}
+                    globalMultiplier={u.globalSpeedMultiplier ?? 1.0}
+                    globalDriftEnabled={u.driftEnabled ?? true}
+                    defaultSpeed={decoDefaultSpeed}
+                  />
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="photo-empty-hint">
@@ -911,6 +1214,19 @@ export const UniverseParameterPanel: React.FC<UniverseParameterPanelProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Falling Speed Control for Photo */}
+        <GroupFallSpeedControl
+          label="Ảnh kỷ niệm"
+          enabled={u.photoDriftEnabled ?? true}
+          onToggleEnabled={(en) => updateUniverse({ photoDriftEnabled: en })}
+          speed={u.photoDriftSpeed ?? 0.35}
+          onChangeSpeed={(sp) => updateUniverse({ photoDriftSpeed: sp })}
+          onResetDefault={() => updateUniverse({ photoDriftEnabled: true, photoDriftSpeed: 0.35 })}
+          globalMultiplier={u.globalSpeedMultiplier ?? 1.0}
+          globalDriftEnabled={u.driftEnabled ?? true}
+          defaultSpeed={0.35}
+        />
 
         {/* Upload photos from PC */}
         <div className="photo-actions-bar" style={{ marginTop: '10px' }}>

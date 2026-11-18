@@ -8,7 +8,7 @@ import {
   getGiftBox3DGeometry,
 } from './decorationGeometries';
 import { createRNG } from '../universeLayout';
-import { wrapY } from '../motionUtils';
+import { wrapY, generateStratifiedHeights } from '../motionUtils';
 
 export interface DecorationsFieldProps {
   decorations?: UniverseDecorationGroup[];
@@ -18,6 +18,8 @@ export interface DecorationsFieldProps {
   cloudDepth: number;
   driftEnabled?: boolean;
   driftSpeed?: number;
+  globalDriftEnabled?: boolean;
+  globalSpeedMultiplier?: number;
   isOpened: boolean;
   paused?: boolean;
 }
@@ -88,12 +90,11 @@ const SingleDecorationGroupMesh: React.FC<{
     const count = Math.max(1, Math.min(group.count || 12, 60));
 
     const halfW = cloudWidth * 0.5;
-    const halfH = cloudHeight * 0.5;
     const halfD = cloudDepth * 0.5;
+    const yCoords = generateStratifiedHeights(count, cloudHeight, rng, 2.0, 0.75);
 
     for (let i = 0; i < count; i++) {
-      const normY = count > 1 ? i / (count - 1) - 0.5 : 0;
-      const y = normY * (halfH * 1.6) + (rng() - 0.5) * 0.5;
+      const y = yCoords[i];
       const x = (rng() - 0.5) * halfW * 1.6;
       const z = (rng() - 0.5) * halfD * 1.5;
 
@@ -111,7 +112,7 @@ const SingleDecorationGroupMesh: React.FC<{
       });
     }
     return list;
-  }, [group, seed, cloudWidth, cloudHeight, cloudDepth]);
+  }, [group.id, group.count, group.scale, seed, cloudWidth, cloudHeight, cloudDepth]);
 
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
@@ -135,16 +136,16 @@ const SingleDecorationGroupMesh: React.FC<{
     const rawProgress = currentProgressRef.current;
     const mesh = meshRef.current;
 
+    // Continuous downward drift distance accumulation (once per frame, no jump on speed change)
+    if (!paused && driftEnabled) {
+      driftOffsetRef.current += driftSpeed * safeDelta;
+    }
+
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const stagger = (item.phase / (Math.PI * 2)) * 0.25;
       const progress = Math.max(0, Math.min(1, (rawProgress - stagger) / (1 - stagger)));
       const ease = 1 - Math.pow(1 - progress, 3);
-
-      // Continuous downward drift distance accumulation (no jump on speed change)
-      if (!paused && driftEnabled) {
-        driftOffsetRef.current += driftSpeed * safeDelta;
-      }
 
       const wrappedY = wrapY(item.pos[1], driftOffsetRef.current, cloudHeight);
       const dy = Math.sin(time * item.speed + item.phase) * 0.12;
@@ -193,6 +194,8 @@ export const DecorationsField: React.FC<DecorationsFieldProps> = ({
   cloudDepth,
   driftEnabled = true,
   driftSpeed = 0.35,
+  globalDriftEnabled,
+  globalSpeedMultiplier,
   isOpened,
   paused = false,
 }) => {
@@ -202,22 +205,31 @@ export const DecorationsField: React.FC<DecorationsFieldProps> = ({
 
   if (activeGroups.length === 0) return null;
 
+  const isGloballyActive = globalDriftEnabled !== undefined ? globalDriftEnabled : driftEnabled;
+  const multiplier = globalSpeedMultiplier !== undefined ? globalSpeedMultiplier : 1.0;
+
   return (
     <group>
-      {activeGroups.map((group) => (
-        <SingleDecorationGroupMesh
-          key={group.id}
-          group={group}
-          seed={seed}
-          cloudWidth={cloudWidth}
-          cloudHeight={cloudHeight}
-          cloudDepth={cloudDepth}
-          driftEnabled={driftEnabled}
-          driftSpeed={driftSpeed}
-          isOpened={isOpened}
-          paused={paused}
-        />
-      ))}
+      {activeGroups.map((group) => {
+        const groupDriftEnabled = group.driftEnabled ?? true;
+        const groupDriftSpeed = group.driftSpeed ?? (group.type === 'giftbox' ? 0.25 : driftSpeed);
+        const effectiveSpeed = (isGloballyActive && groupDriftEnabled) ? groupDriftSpeed * multiplier : 0;
+
+        return (
+          <SingleDecorationGroupMesh
+            key={group.id}
+            group={group}
+            seed={seed}
+            cloudWidth={cloudWidth}
+            cloudHeight={cloudHeight}
+            cloudDepth={cloudDepth}
+            driftEnabled={isGloballyActive && groupDriftEnabled && effectiveSpeed > 0}
+            driftSpeed={effectiveSpeed}
+            isOpened={isOpened}
+            paused={paused}
+          />
+        );
+      })}
     </group>
   );
 };

@@ -35,7 +35,7 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
   const obj = raw as Record<string, unknown>;
 
   // Check allowed keys at root
-  const allowedRootKeys = ['schemaVersion', 'assetId', 'assetVersion', 'appearance', 'transform', 'motion', 'universe'];
+  const allowedRootKeys = ['schemaVersion', 'assetId', 'assetVersion', 'appearance', 'transform', 'motion', 'universe', 'roseReveal'];
   for (const k of Object.keys(obj)) {
     if (!allowedRootKeys.includes(k)) {
       errors.push(`Trường không được hỗ trợ trong cấu hình: '${k}'`);
@@ -191,6 +191,13 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
         'heartFloatAmp',
         'driftEnabled',
         'driftSpeed',
+        'globalSpeedMultiplier',
+        'textDriftEnabled',
+        'textDriftSpeed',
+        'photoDriftEnabled',
+        'photoDriftSpeed',
+        'heartDriftEnabled',
+        'heartDriftSpeed',
         'decorations',
       ];
       for (const uk of Object.keys(u)) {
@@ -276,6 +283,27 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
       if ('driftSpeed' in u && (!isFiniteNumber(u.driftSpeed) || !inRange(u.driftSpeed, 0, 10))) {
         errors.push('universe.driftSpeed phải là số hữu hạn từ 0 đến 10.');
       }
+      if ('globalSpeedMultiplier' in u && (!isFiniteNumber(u.globalSpeedMultiplier) || !inRange(u.globalSpeedMultiplier, 0, 5))) {
+        errors.push('universe.globalSpeedMultiplier phải là số hữu hạn từ 0 đến 5.');
+      }
+      if ('textDriftEnabled' in u && typeof u.textDriftEnabled !== 'boolean') {
+        errors.push('universe.textDriftEnabled phải là boolean.');
+      }
+      if ('textDriftSpeed' in u && (!isFiniteNumber(u.textDriftSpeed) || !inRange(u.textDriftSpeed, 0, 10))) {
+        errors.push('universe.textDriftSpeed phải là số hữu hạn từ 0 đến 10.');
+      }
+      if ('photoDriftEnabled' in u && typeof u.photoDriftEnabled !== 'boolean') {
+        errors.push('universe.photoDriftEnabled phải là boolean.');
+      }
+      if ('photoDriftSpeed' in u && (!isFiniteNumber(u.photoDriftSpeed) || !inRange(u.photoDriftSpeed, 0, 10))) {
+        errors.push('universe.photoDriftSpeed phải là số hữu hạn từ 0 đến 10.');
+      }
+      if ('heartDriftEnabled' in u && typeof u.heartDriftEnabled !== 'boolean') {
+        errors.push('universe.heartDriftEnabled phải là boolean.');
+      }
+      if ('heartDriftSpeed' in u && (!isFiniteNumber(u.heartDriftSpeed) || !inRange(u.heartDriftSpeed, 0, 10))) {
+        errors.push('universe.heartDriftSpeed phải là số hữu hạn từ 0 đến 10.');
+      }
       if ('decorations' in u && u.decorations !== undefined) {
         if (!Array.isArray(u.decorations)) {
           errors.push('universe.decorations phải là mảng.');
@@ -284,11 +312,105 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
             const dec = u.decorations[i];
             if (!dec || typeof dec !== 'object') {
               errors.push(`universe.decorations[${i}] phải là đối tượng.`);
-            } else if (!['heart', 'star3d', 'giftbox'].includes((dec as Record<string, unknown>).type as string)) {
-              errors.push(`universe.decorations[${i}].type không hợp lệ.`);
+            } else {
+              const dObj = dec as Record<string, unknown>;
+              if (!['heart', 'star3d', 'giftbox'].includes(dObj.type as string)) {
+                errors.push(`universe.decorations[${i}].type không hợp lệ.`);
+              }
+              if ('driftEnabled' in dObj && typeof dObj.driftEnabled !== 'boolean') {
+                errors.push(`universe.decorations[${i}].driftEnabled phải là boolean.`);
+              }
+              if ('driftSpeed' in dObj && (!isFiniteNumber(dObj.driftSpeed) || !inRange(dObj.driftSpeed, 0, 10))) {
+                errors.push(`universe.decorations[${i}].driftSpeed phải là số hữu hạn từ 0 đến 10.`);
+              }
             }
           }
         }
+      }
+    }
+  }
+
+  // roseReveal validation
+  if ('roseReveal' in obj) {
+    if (!obj.roseReveal || typeof obj.roseReveal !== 'object' || Array.isArray(obj.roseReveal)) {
+      errors.push('roseReveal phải là một đối tượng cấu hình.');
+    } else {
+      const r = obj.roseReveal as Record<string, unknown>;
+      const allowedRoseKeys = [
+        'petalColor',
+        'petalInnerColor',
+        'petalEdgeColor',
+        'stemColor',
+        'backgroundColor',
+        'flowerScale',
+        'bloomDuration',
+        'flyingPetalsCount',
+        'burstSpeed',
+        'fallSpeed',
+        'spinSpeed',
+        'ambientLightIntensity',
+        'messageText',
+        'buttonText',
+        'destinationTarget',
+        'manualBloomProgress',
+        'inspectionMode',
+      ];
+      for (const rk of Object.keys(r)) {
+        if (!allowedRoseKeys.includes(rk)) {
+          errors.push(`Trường không được hỗ trợ trong roseReveal: '${rk}'`);
+        }
+      }
+
+      if ('petalColor' in r && (typeof r.petalColor !== 'string' || !HEX_COLOR_REGEX.test(r.petalColor))) {
+        errors.push('roseReveal.petalColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('petalInnerColor' in r && (typeof r.petalInnerColor !== 'string' || !HEX_COLOR_REGEX.test(r.petalInnerColor))) {
+        errors.push('roseReveal.petalInnerColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('petalEdgeColor' in r && (typeof r.petalEdgeColor !== 'string' || !HEX_COLOR_REGEX.test(r.petalEdgeColor))) {
+        errors.push('roseReveal.petalEdgeColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('stemColor' in r && (typeof r.stemColor !== 'string' || !HEX_COLOR_REGEX.test(r.stemColor))) {
+        errors.push('roseReveal.stemColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('backgroundColor' in r && (typeof r.backgroundColor !== 'string' || !HEX_COLOR_REGEX.test(r.backgroundColor))) {
+        errors.push('roseReveal.backgroundColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('flowerScale' in r && (!isFiniteNumber(r.flowerScale) || !inRange(r.flowerScale, 0.2, 5.0))) {
+        errors.push('roseReveal.flowerScale phải là số hữu hạn từ 0.2 đến 5.0.');
+      }
+      if ('bloomDuration' in r && (!isFiniteNumber(r.bloomDuration) || !inRange(r.bloomDuration, 0.5, 10.0))) {
+        errors.push('roseReveal.bloomDuration phải là số hữu hạn từ 0.5 đến 10.0 giây.');
+      }
+      if ('flyingPetalsCount' in r && (!isFiniteNumber(r.flyingPetalsCount) || !inRange(r.flyingPetalsCount, 0, 200))) {
+        errors.push('roseReveal.flyingPetalsCount phải là số hữu hạn từ 0 đến 200.');
+      }
+      if ('burstSpeed' in r && (!isFiniteNumber(r.burstSpeed) || !inRange(r.burstSpeed, 0.1, 10.0))) {
+        errors.push('roseReveal.burstSpeed phải là số hữu hạn từ 0.1 đến 10.0.');
+      }
+      if ('fallSpeed' in r && (!isFiniteNumber(r.fallSpeed) || !inRange(r.fallSpeed, 0.1, 10.0))) {
+        errors.push('roseReveal.fallSpeed phải là số hữu hạn từ 0.1 đến 10.0.');
+      }
+      if ('spinSpeed' in r && (!isFiniteNumber(r.spinSpeed) || !inRange(r.spinSpeed, 0.0, 10.0))) {
+        errors.push('roseReveal.spinSpeed phải là số hữu hạn từ 0.0 đến 10.0.');
+      }
+      if ('ambientLightIntensity' in r && (!isFiniteNumber(r.ambientLightIntensity) || !inRange(r.ambientLightIntensity, 0.0, 5.0))) {
+        errors.push('roseReveal.ambientLightIntensity phải là số hữu hạn từ 0.0 đến 5.0.');
+      }
+      if ('messageText' in r && typeof r.messageText !== 'string') {
+        errors.push('roseReveal.messageText phải là chuỗi văn bản.');
+      }
+      if ('buttonText' in r && typeof r.buttonText !== 'string') {
+        errors.push('roseReveal.buttonText phải là chuỗi văn bản.');
+      }
+      if ('destinationTarget' in r && !['demo-card', 'love-universe-01'].includes(r.destinationTarget as string)) {
+        errors.push('roseReveal.destinationTarget phải là "demo-card" hoặc "love-universe-01".');
+      }
+      if ('manualBloomProgress' in r && r.manualBloomProgress !== undefined && (!isFiniteNumber(r.manualBloomProgress) || !inRange(r.manualBloomProgress, -1, 1))) {
+        errors.push('roseReveal.manualBloomProgress phải là số hữu hạn từ -1 đến 1.');
+      }
+      if ('inspectionMode' in r && r.inspectionMode !== undefined && typeof r.inspectionMode !== 'boolean') {
+        errors.push('roseReveal.inspectionMode phải là boolean.');
       }
     }
   }

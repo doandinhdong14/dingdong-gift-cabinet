@@ -63,6 +63,8 @@ export interface UniverseDecorationGroup {
   spinSpeed: number;    // 0 - 5.0
   roughness?: number;   // 0.1 - 0.9
   enabled: boolean;
+  driftEnabled?: boolean; // Bật rơi riêng cho nhóm này (mặc định: true)
+  driftSpeed?: number;    // Tốc độ rơi riêng: 0 - 3 đơn vị scene/giây (bước 0.05)
 }
 
 export interface UniverseConfig {
@@ -96,12 +98,43 @@ export interface UniverseConfig {
   heartSpinSpeed?: number;
   heartFloatAmp?: number;
 
-  // New downward drift scene motion controls
-  driftEnabled?: boolean;
-  driftSpeed?: number;
+  // Scene-wide drift controls
+  driftEnabled?: boolean;           // Bật/tắt rơi toàn cảnh
+  driftSpeed?: number;              // (Legacy / fallback: 0.35)
+  globalSpeedMultiplier?: number;   // Hệ số tốc độ chung (0 - 2, mặc định 1.0)
+
+  // Independent group drift controls
+  textDriftEnabled?: boolean;       // Bật rơi chữ (mặc định: true)
+  textDriftSpeed?: number;          // Tốc độ rơi chữ (0 - 3 đơn vị scene/s, bước 0.05)
+
+  photoDriftEnabled?: boolean;      // Bật rơi ảnh (mặc định: true)
+  photoDriftSpeed?: number;         // Tốc độ rơi ảnh (0 - 3 đơn vị scene/s, bước 0.05)
+
+  heartDriftEnabled?: boolean;      // Bật rơi trái tim chính (mặc định: true)
+  heartDriftSpeed?: number;         // Tốc độ rơi trái tim chính (0 - 3 đơn vị scene/s, bước 0.05)
 
   // New decorative objects
   decorations?: UniverseDecorationGroup[];
+}
+
+export interface RoseRevealConfig {
+  petalColor: string;
+  petalInnerColor: string;
+  petalEdgeColor: string;
+  stemColor: string;
+  backgroundColor: string;
+  flowerScale: number;
+  bloomDuration: number;
+  flyingPetalsCount: number;
+  burstSpeed: number;
+  fallSpeed: number;
+  spinSpeed: number;
+  ambientLightIntensity: number;
+  messageText: string;
+  buttonText: string;
+  destinationTarget: 'demo-card' | 'love-universe-01';
+  manualBloomProgress?: number;
+  inspectionMode?: boolean;
 }
 
 export interface AssetConfig {
@@ -112,6 +145,7 @@ export interface AssetConfig {
   transform: AssetTransform;
   motion: AssetMotion;
   universe?: UniverseConfig;
+  roseReveal?: RoseRevealConfig;
 }
 
 export interface Preset {

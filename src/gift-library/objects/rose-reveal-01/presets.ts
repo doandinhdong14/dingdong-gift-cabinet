@@ -1,0 +1,161 @@
+import { AssetConfig, Preset, RoseRevealConfig } from '../../types';
+
+export const defaultRoseRevealConfig: RoseRevealConfig = {
+  petalColor: '#F48FB1',
+  petalInnerColor: '#C2185B',
+  petalEdgeColor: '#FFE4E8',
+  stemColor: '#4A7C59',
+  backgroundColor: '#190B17',
+  flowerScale: 1.0,
+  bloomDuration: 1.8,
+  flyingPetalsCount: 75,
+  burstSpeed: 1.8,
+  fallSpeed: 0.85,
+  spinSpeed: 1.8,
+  ambientLightIntensity: 0.85,
+  messageText: 'Có một điều nhỏ bé dành cho bạn',
+  buttonText: 'Chạm để mở quà ♡',
+  destinationTarget: 'demo-card',
+  manualBloomProgress: -1,
+  inspectionMode: false,
+};
+
+export const roseReveal01DefaultConfig: AssetConfig = {
+  schemaVersion: 1,
+  assetId: 'rose-reveal-01',
+  assetVersion: '1.0.0',
+  appearance: {
+    color: '#F48FB1',
+    roughness: 0.45,
+    metalness: 0.05,
+  },
+  transform: {
+    scale: 1.0,
+    rotationDeg: [0, 0, 0],
+  },
+  motion: {
+    float: {
+      enabled: true,
+      amplitude: 0.05,
+      speed: 0.8,
+    },
+    heartbeat: {
+      enabled: false,
+      strength: 0.0,
+      bpm: 60,
+    },
+    spin: {
+      enabled: false,
+      speedDegPerSecond: 0,
+    },
+  },
+  roseReveal: defaultRoseRevealConfig,
+};
+
+export const roseReveal01Presets: Preset[] = [
+  {
+    id: 'rose-preset-classic-pink',
+    name: 'Hồng phấn kinh điển',
+    assetId: 'rose-reveal-01',
+    assetVersion: '1.0.0',
+    isBuiltIn: true,
+    createdAt: '2026-11-18T00:00:00.000Z',
+    updatedAt: '2026-11-18T00:00:00.000Z',
+    config: {
+      ...roseReveal01DefaultConfig,
+      roseReveal: {
+        ...defaultRoseRevealConfig,
+        petalColor: '#F48FB1',
+        petalInnerColor: '#C2185B',
+        petalEdgeColor: '#FFE4E8',
+        stemColor: '#4A7C59',
+        backgroundColor: '#190B17',
+        bloomDuration: 1.8,
+        flyingPetalsCount: 75,
+      },
+    },
+  },
+  {
+    id: 'rose-preset-royal-red',
+    name: 'Đỏ nhung hoàng gia',
+    assetId: 'rose-reveal-01',
+    assetVersion: '1.0.0',
+    isBuiltIn: true,
+    createdAt: '2026-11-18T00:00:00.000Z',
+    updatedAt: '2026-11-18T00:00:00.000Z',
+    config: {
+      ...roseReveal01DefaultConfig,
+      appearance: {
+        color: '#D32F2F',
+        roughness: 0.4,
+        metalness: 0.05,
+      },
+      roseReveal: {
+        ...defaultRoseRevealConfig,
+        petalColor: '#E53935',
+        petalInnerColor: '#880E4F',
+        petalEdgeColor: '#FFCDD2',
+        stemColor: '#388E3C',
+        backgroundColor: '#1A0A0E',
+        bloomDuration: 2.0,
+        flyingPetalsCount: 85,
+        burstSpeed: 2.0,
+      },
+    },
+  },
+  {
+    id: 'rose-preset-white-opal',
+    name: 'Bạch ngọc tinh khôi',
+    assetId: 'rose-reveal-01',
+    assetVersion: '1.0.0',
+    isBuiltIn: true,
+    createdAt: '2026-11-18T00:00:00.000Z',
+    updatedAt: '2026-11-18T00:00:00.000Z',
+    config: {
+      ...roseReveal01DefaultConfig,
+      appearance: {
+        color: '#FFF0F5',
+        roughness: 0.35,
+        metalness: 0.08,
+      },
+      roseReveal: {
+        ...defaultRoseRevealConfig,
+        petalColor: '#FFF0F5',
+        petalInnerColor: '#F8BBD0',
+        petalEdgeColor: '#FFFFFF',
+        stemColor: '#558B2F',
+        backgroundColor: '#0F172A',
+        bloomDuration: 1.9,
+        flyingPetalsCount: 70,
+        burstSpeed: 1.6,
+      },
+    },
+  },
+  {
+    id: 'rose-preset-sunset-lavender',
+    name: 'Tím hoàng hôn mộng mơ',
+    assetId: 'rose-reveal-01',
+    assetVersion: '1.0.0',
+    isBuiltIn: true,
+    createdAt: '2026-11-18T00:00:00.000Z',
+    updatedAt: '2026-11-18T00:00:00.000Z',
+    config: {
+      ...roseReveal01DefaultConfig,
+      appearance: {
+        color: '#BA68C8',
+        roughness: 0.45,
+        metalness: 0.05,
+      },
+      roseReveal: {
+        ...defaultRoseRevealConfig,
+        petalColor: '#BA68C8',
+        petalInnerColor: '#6A1B9A',
+        petalEdgeColor: '#E1BEE7',
+        stemColor: '#4E6E5D',
+        backgroundColor: '#160B24',
+        bloomDuration: 1.8,
+        flyingPetalsCount: 80,
+      },
+    },
+  },
+];

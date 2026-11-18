@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { UniverseElementLayout } from './types';
-import { createFlipUvMaterial } from './flipUvShader';
+import { createFlipUvMaterial, createHaloGlowMaterial } from './flipUvShader';
 import { wrapY } from './motionUtils';
 
 export interface TextCardMeshProps {
@@ -29,7 +29,6 @@ export interface TextCardMeshProps {
 function createTextDualTextures(
   text: string,
   textColor: string,
-  glowColor: string,
   glowSpread: number
 ): {
   coreTexture: THREE.CanvasTexture;
@@ -80,7 +79,7 @@ function createTextDualTextures(
   coreTexture.minFilter = THREE.LinearMipmapLinearFilter;
   coreTexture.magFilter = THREE.LinearFilter;
 
-  // --- 2. HALO GLOW CANVAS (Soft radiating amber aura) ---
+  // --- 2. HALO GLOW CANVAS (Soft radiating Gaussian white bloom map) ---
   const haloCanvas = document.createElement('canvas');
   haloCanvas.width = baseWidth * scale;
   haloCanvas.height = baseHeight * scale;
@@ -93,26 +92,28 @@ function createTextDualTextures(
     haloCtx.textBaseline = 'middle';
 
     const spreadFactor = Math.max(0.1, Math.min(1.2, glowSpread));
-    const gold = glowColor || '#FFBE28';
+
+    haloCtx.shadowOffsetX = 0;
+    haloCtx.shadowOffsetY = 0;
 
     // Pass 1: Broad soft outer aura
-    haloCtx.shadowColor = gold;
-    haloCtx.shadowBlur = Math.round(26 + 32 * spreadFactor);
+    haloCtx.shadowColor = '#FFFFFF';
+    haloCtx.shadowBlur = Math.round(28 + 36 * spreadFactor);
     haloCtx.lineWidth = Math.round(10 + 16 * spreadFactor);
-    haloCtx.strokeStyle = gold;
+    haloCtx.strokeStyle = 'rgba(255, 255, 255, 0.40)';
     haloCtx.strokeText(text, centerX, centerY);
 
-    // Pass 2: Mid-intensity golden bloom
-    haloCtx.shadowColor = gold;
-    haloCtx.shadowBlur = Math.round(14 + 16 * spreadFactor);
+    // Pass 2: Mid-intensity luminous bloom
+    haloCtx.shadowColor = '#FFFFFF';
+    haloCtx.shadowBlur = Math.round(14 + 18 * spreadFactor);
     haloCtx.lineWidth = Math.round(4 + 8 * spreadFactor);
-    haloCtx.strokeStyle = gold;
+    haloCtx.strokeStyle = 'rgba(255, 255, 255, 0.60)';
     haloCtx.strokeText(text, centerX, centerY);
 
-    // Pass 3: Warm inner radiance
-    haloCtx.shadowColor = '#FFF5CC';
-    haloCtx.shadowBlur = 6;
-    haloCtx.fillStyle = gold;
+    // Pass 3: Concentrated soft inner radiance
+    haloCtx.shadowColor = '#FFFFFF';
+    haloCtx.shadowBlur = Math.round(6 + 8 * spreadFactor);
+    haloCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
     haloCtx.fillText(text, centerX, centerY);
   }
 
@@ -141,6 +142,7 @@ export const TextCardMesh: React.FC<TextCardMeshProps> = ({
   floatAmplitude = 0.12,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
+  const haloMeshRef = useRef<THREE.Mesh>(null);
   const coreMatRef = useRef<THREE.ShaderMaterial | null>(null);
   const haloMatRef = useRef<THREE.ShaderMaterial | null>(null);
   const timeRef = useRef<number>(0);
@@ -157,8 +159,8 @@ export const TextCardMesh: React.FC<TextCardMeshProps> = ({
   }, []);
 
   const { coreTexture, haloTexture, aspect } = useMemo(() => {
-    return createTextDualTextures(item.content, textColor, glowColor, glowSpread);
-  }, [item.content, textColor, glowColor, glowSpread, fontReady]);
+    return createTextDualTextures(item.content, textColor, glowSpread);
+  }, [item.content, textColor, glowSpread, fontReady]);
 
   // Core material: NormalBlending, crisp core text
   const coreMaterial = useMemo(() => {
@@ -167,9 +169,9 @@ export const TextCardMesh: React.FC<TextCardMeshProps> = ({
     return mat;
   }, [coreTexture, isOpened]);
 
-  // Halo material: AdditiveBlending, true luminous light emission on space background
+  // Halo material: Custom Additive photon blending, true continuous luminous energy
   const haloMaterial = useMemo(() => {
-    const mat = createFlipUvMaterial(haloTexture, glowColor, isOpened ? 1 : 0, THREE.AdditiveBlending);
+    const mat = createHaloGlowMaterial(haloTexture, glowColor, isOpened ? 1 : 0, glowIntensity);
     haloMatRef.current = mat;
     return mat;
   }, [haloTexture, glowColor, isOpened]);
@@ -238,14 +240,15 @@ export const TextCardMesh: React.FC<TextCardMeshProps> = ({
       // Core opacity
       coreMatRef.current.uniforms.uOpacity.value = ease;
 
-      // Halo glow intensity mapping
-      // If glowEnabled is false or glowIntensity === 0, halo is completely hidden!
-      // Otherwise, scales with glowIntensity (0 to 3)
-      const effectiveGlow = glowEnabled && glowIntensity > 0
-        ? Math.min(3.0, glowIntensity) * 0.85
-        : 0.0;
+      // Halo glow intensity mapping in real-time
+      const effectiveGlow = glowEnabled && glowIntensity > 0 ? glowIntensity : 0.0;
+      haloMatRef.current.uniforms.uGlowIntensity.value = effectiveGlow;
+      haloMatRef.current.uniforms.uOpacity.value = ease;
+      haloMatRef.current.uniforms.uColor.value.set(glowColor || '#FFBE28');
 
-      haloMatRef.current.uniforms.uOpacity.value = ease * effectiveGlow;
+      if (haloMeshRef.current) {
+        haloMeshRef.current.visible = effectiveGlow > 0;
+      }
 
       groupRef.current.visible = progress > 0.01;
     }
@@ -258,7 +261,12 @@ export const TextCardMesh: React.FC<TextCardMeshProps> = ({
       rotation={item.rotation}
     >
       {/* 1. Additive luminous glow halo (behind core) */}
-      <mesh material={haloMaterial} position={[0, 0, -0.001]} visible={glowEnabled && glowIntensity > 0}>
+      <mesh
+        ref={haloMeshRef}
+        material={haloMaterial}
+        position={[0, 0, -0.001]}
+        visible={glowEnabled && glowIntensity > 0}
+      >
         <planeGeometry args={[planeWidth, planeHeight]} />
       </mesh>
 
