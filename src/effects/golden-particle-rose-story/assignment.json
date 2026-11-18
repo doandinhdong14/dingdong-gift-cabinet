@@ -1,0 +1,16 @@
+{
+  "taskId": "task-golden-particle-rose-story",
+  "batchId": "batch-001",
+  "slot": "01",
+  "effectId": "golden-particle-rose-story",
+  "branch": "effect/batch-001/01",
+  "port": 5211,
+  "baselineCommit": "main",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/golden-particle-rose-story/**",
+    ".local/golden-particle-rose-story/**"
+  ],
+  "kind": "scene",
+  "referenceFiles": []
+}

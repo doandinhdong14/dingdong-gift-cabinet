@@ -1,0 +1,19 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#fbcfe8"/>
+      <stop offset="50%" stopColor="#fed7aa"/>
+      <stop offset="100%" stopColor="#f472b6"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <!-- Classical Rotunda Arch Silhouette -->
+  <path d="M120,180 L120,90 Q200,40 280,90 L280,180" stroke="#ffffff" stroke-width="6" stroke-opacity="0.8" fill="none"/>
+  <circle cx="200" cy="90" r="30" fill="#ffffff" fill-opacity="0.25"/>
+  <!-- Tulip & Flower Hedge -->
+  <path d="M0,220 Q100,190 200,210 Q300,190 400,220 L400,300 L0,300 Z" fill="#fda4af"/>
+  <!-- Satin Ribbon Curve -->
+  <path d="M0,250 C120,210 240,290 400,240" stroke="#f43f5e" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <!-- Text -->
+  <text x="200" y="275" font-family="'Dancing Script', cursive, sans-serif" font-size="22" font-weight="bold" fill="#831843" text-anchor="middle">Pastel Memory Garden</text>
+</svg>

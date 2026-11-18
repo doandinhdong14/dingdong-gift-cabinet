@@ -1,0 +1,15 @@
+{
+  "taskId": "task-memory-bouquet-burst",
+  "batchId": "batch-bouquet",
+  "slot": "01",
+  "effectId": "memory-bouquet-burst",
+  "branch": "effect/memory-bouquet-burst",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/memory-bouquet-burst/**"
+  ],
+  "kind": "transition",
+  "referenceFiles": [
+    "chrome_eRX7W2Rz03.mp4"
+  ]
+}

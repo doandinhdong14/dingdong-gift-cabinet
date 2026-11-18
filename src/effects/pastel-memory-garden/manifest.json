@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "pastel-memory-garden",
+  "name": "Pastel Memory Garden",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "scene",
+  "renderer": "dom",
+  "description": "Vườn hoa ký ức pastel với chân dung hòa vào hoa, ruy băng satin và panorama cuộn ngang",
+  "tags": ["pastel", "garden", "vườn hoa", "ký ức", "ruy băng", "panorama", "scene"],
+  "status": "approved",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": false,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}

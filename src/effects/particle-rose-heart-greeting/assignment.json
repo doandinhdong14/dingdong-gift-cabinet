@@ -1,0 +1,16 @@
+{
+  "taskId": "task-particle-rose-heart-greeting",
+  "batchId": "batch-001",
+  "slot": "01",
+  "effectId": "particle-rose-heart-greeting",
+  "branch": "effect/batch-001/01",
+  "port": 5211,
+  "baselineCommit": "main",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/particle-rose-heart-greeting/**",
+    ".local/particle-rose-heart-greeting/**"
+  ],
+  "kind": "scene",
+  "referenceFiles": []
+}

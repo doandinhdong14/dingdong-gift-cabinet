@@ -1,0 +1,16 @@
+{
+  "taskId": "task-vintage-calendar-heart",
+  "batchId": "batch-001",
+  "slot": "01",
+  "effectId": "vintage-calendar-heart",
+  "branch": "effect/batch-001/01",
+  "port": 5211,
+  "baselineCommit": "main",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/vintage-calendar-heart/**",
+    ".local/vintage-calendar-heart/**"
+  ],
+  "kind": "scene",
+  "referenceFiles": []
+}

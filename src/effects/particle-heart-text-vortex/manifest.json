@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "particle-heart-text-vortex",
+  "name": "Trái tim hạt sáng trên đế chữ xoay",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "scene",
+  "renderer": "r3f",
+  "description": "Trái tim hạt sáng 3D lơ lửng trên đế xoáy chữ và luồng hạt kết nối",
+  "tags": ["trái tim", "hạt sáng", "đế chữ xoay", "vortex", "3D"],
+  "status": "review",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": false,
+    "completionEvent": false,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}

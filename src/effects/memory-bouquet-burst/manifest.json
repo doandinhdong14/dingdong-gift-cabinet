@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "memory-bouquet-burst",
+  "name": "Bó hoa kỷ niệm",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "transition",
+  "renderer": "r3f",
+  "description": "Bó hoa hồng kỷ niệm với hiệu ứng chạm mở ảnh và ấn giữ để tung ảnh kỷ niệm",
+  "tags": ["bó hoa", "kỷ niệm", "ảnh", "burst", "transition"],
+  "status": "approved",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": true,
+    "mediaInputs": ["photo1", "photo2", "photo3", "photo4", "photo5", "photo6"],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}

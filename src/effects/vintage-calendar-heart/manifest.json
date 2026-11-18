@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "vintage-calendar-heart",
+  "name": "Lịch Treo Tường Cổ Điển",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "scene",
+  "renderer": "dom",
+  "description": "Hiệu ứng lịch treo tường lật từng tờ giấy, cuộn mép 3D, xé bay ra, vẽ trái tim quanh ngày 19 và hiển thị lời chúc",
+  "tags": ["lịch", "vintage", "calendar", "heart", "ngày quốc tế nam giới", "scene"],
+  "status": "review",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": true,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <rect width="400" height="300" fill="#07070b"/>
+  <circle cx="200" cy="150" r="110" fill="radial-gradient(circle, #f472b6 0%, transparent 70%)" opacity="0.2"/>
+  <g transform="translate(200, 150) scale(0.65)">
+    <!-- Bouquet Wrapper -->
+    <path d="M-80,-20 C-100,50 -60,110 0,140 C60,110 100,50 80,-20 Z" fill="#fbcfe8" opacity="0.8"/>
+    <!-- Roses -->
+    <circle cx="0" cy="-40" r="30" fill="#f43f5e"/>
+    <circle cx="-40" cy="-20" r="26" fill="#fb7185"/>
+    <circle cx="40" cy="-20" r="26" fill="#fecdd3"/>
+    <circle cx="-25" cy="15" r="24" fill="#fda4af"/>
+    <circle cx="25" cy="15" r="24" fill="#f43f5e"/>
+    <!-- Bow -->
+    <path d="M-30,90 Q0,80 30,90 Q20,110 0,105 Q-20,110 -30,90 Z" fill="#ec4899"/>
+    <circle cx="0" cy="95" r="9" fill="#be185d"/>
+  </g>
+  <text x="200" y="270" text-anchor="middle" fill="#f9a8d4" font-family="sans-serif" font-size="14" font-weight="600">Bó hoa kỷ niệm</text>
+</svg>

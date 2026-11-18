@@ -1,0 +1,16 @@
+{
+  "taskId": "task-pastel-memory-garden",
+  "batchId": "batch-001",
+  "slot": "01",
+  "effectId": "pastel-memory-garden",
+  "branch": "effect/batch-001/01",
+  "port": 5211,
+  "baselineCommit": "main",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/pastel-memory-garden/**",
+    ".local/pastel-memory-garden/**"
+  ],
+  "kind": "scene",
+  "referenceFiles": []
+}

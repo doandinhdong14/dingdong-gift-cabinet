@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "particle-rose-heart-greeting",
+  "name": "Particle Rose Heart Greeting",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "scene",
+  "renderer": "dom",
+  "description": "Hiệu ứng hạt morphing thành chữ Chúc Mừng, women's day, kết thành trái tim hoa hồng và bầy gấu bông bay trong không gian.",
+  "tags": ["particles", "morphing", "rose-heart", "teddy-bears", "womens-day", "interactive", "scene"],
+  "status": "review",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": true,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": true
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}

@@ -1,0 +1,188 @@
+import type { EffectControls } from '../../effect-sdk';
+import type { EffectConfig } from './config';
+
+export const controls: EffectControls<EffectConfig> = {
+  // --- Nhóm Trái tim ---
+  heartScale: {
+    type: 'number',
+    label: 'Kích thước tim',
+    min: 0.5,
+    max: 2.0,
+    step: 0.05,
+    unit: 'x',
+    description: 'Tỷ lệ kích thước tổng thể khối trái tim hạt sáng',
+  },
+  heartParticleCount: {
+    type: 'number',
+    label: 'Mật độ hạt tim',
+    min: 2000,
+    max: 25000,
+    step: 500,
+    description: 'Số lượng hạt phát sáng tạo nên khối trái tim',
+  },
+  heartParticleSize: {
+    type: 'number',
+    label: 'Kích thước hạt tim',
+    min: 0.5,
+    max: 3.0,
+    step: 0.1,
+    unit: 'px',
+    description: 'Độ lớn của từng hạt phát sáng trên tim',
+  },
+  heartPrimaryColor: {
+    type: 'color',
+    label: 'Màu chính tim',
+    description: 'Màu hồng sen chủ đạo của trái tim hạt',
+  },
+  heartGlowColor: {
+    type: 'color',
+    label: 'Màu viền & toả sáng',
+    description: 'Màu sắc quầng sáng và hạt viền ngoài',
+  },
+  heartCoreBrightness: {
+    type: 'number',
+    label: 'Độ sáng lõi hạt',
+    min: 0.0,
+    max: 2.5,
+    step: 0.1,
+    description: 'Cường độ phát sáng trắng tại tâm điểm hạt',
+  },
+  heartPulseSpeed: {
+    type: 'number',
+    label: 'Tốc độ nhịp tim',
+    min: 0.0,
+    max: 3.0,
+    step: 0.1,
+    unit: 'x',
+    description: 'Tốc độ chu kỳ phồng - thu (0 = dừng nhịp)',
+  },
+  heartPulseAmplitude: {
+    type: 'number',
+    label: 'Biên độ phồng thu',
+    min: 0.0,
+    max: 0.1,
+    step: 0.005,
+    description: 'Biên độ co giãn của nhịp đập trái tim (2% - 4%)',
+  },
+  heartJitterStrength: {
+    type: 'number',
+    label: 'Rung động cục bộ',
+    min: 0.0,
+    max: 2.0,
+    step: 0.1,
+    description: 'Mức độ rung lấp lánh ngẫu nhiên tại chỗ của các hạt',
+  },
+
+  // --- Nhóm Đế chữ xoay ---
+  diskRadius: {
+    type: 'number',
+    label: 'Bán kính đế',
+    min: 1.0,
+    max: 3.5,
+    step: 0.1,
+    description: 'Độ rộng tối đa của đĩa xoáy chữ bên dưới',
+  },
+  diskRingCount: {
+    type: 'number',
+    label: 'Số vòng chữ',
+    min: 4,
+    max: 12,
+    step: 1,
+    description: 'Số lượng quỹ đạo chữ đồng tâm tạo thành đĩa',
+  },
+  diskFontSize: {
+    type: 'number',
+    label: 'Cỡ chữ đế',
+    min: 12,
+    max: 26,
+    step: 1,
+    unit: 'px',
+    description: 'Kích thước hiển thị chữ trên các vòng đĩa',
+  },
+  diskTextColor: {
+    type: 'color',
+    label: 'Màu chữ đế',
+    description: 'Màu sắc văn bản chạy trên các vòng',
+  },
+  diskAccentColor: {
+    type: 'color',
+    label: 'Màu tim xen kẽ',
+    description: 'Màu sắc các biểu tượng trái tim trang trí trên vòng',
+  },
+  diskSpeed: {
+    type: 'number',
+    label: 'Tốc độ quay đế',
+    min: -2.0,
+    max: 2.0,
+    step: 0.05,
+    unit: 'x',
+    description: 'Tốc độ quay của đĩa chữ (0 = dừng quay)',
+  },
+  diskVerticalGap: {
+    type: 'number',
+    label: 'Khoảng cách tim - đế',
+    min: 1.5,
+    max: 3.2,
+    step: 0.1,
+    description: 'Khoảng cách trục dọc giữa đáy tim và tâm đế',
+  },
+  diskMessages: {
+    type: 'text',
+    label: 'Nội dung câu chữ',
+    maxLength: 300,
+    placeholder: 'Nhập các câu cách nhau bằng dấu gạch đứng |',
+    description: 'Các câu chúc chạy trên các vòng tròn',
+  },
+
+  // --- Nhóm Luồng ký tự nối ---
+  streamEnabled: {
+    type: 'toggle',
+    label: 'Bật luồng hạt nối',
+    description: 'Hiển thị dòng hạt và ký tự rơi từ chóp tim xuống tâm đế',
+  },
+  streamDensity: {
+    type: 'number',
+    label: 'Mật độ luồng hạt',
+    min: 20,
+    max: 120,
+    step: 10,
+    description: 'Số lượng ký tự và hạt nhỏ trong luồng rơi',
+  },
+  streamSpeed: {
+    type: 'number',
+    label: 'Tốc độ luồng hạt',
+    min: 0.0,
+    max: 2.5,
+    step: 0.1,
+    unit: 'x',
+    description: 'Tốc độ rơi xoáy của ký tự từ tim xuống đế',
+  },
+  streamSpread: {
+    type: 'number',
+    label: 'Độ tản ngang luồng',
+    min: 0.15,
+    max: 0.7,
+    step: 0.05,
+    description: 'Độ xoắn và tản rộng của luồng ký tự',
+  },
+
+  // --- Nhóm Nền & Không gian ---
+  backgroundColor: {
+    type: 'color',
+    label: 'Màu nền',
+    description: 'Màu sắc không gian vũ trụ tối phía sau',
+  },
+  starDustEnabled: {
+    type: 'toggle',
+    label: 'Bật bụi sao nền',
+    description: 'Hiển thị các hạt sao mờ lấp lánh ở hậu cảnh',
+  },
+  starDustCount: {
+    type: 'number',
+    label: 'Số lượng sao nền',
+    min: 100,
+    max: 800,
+    step: 50,
+    description: 'Mật độ hạt sao tạo chiều sâu không gian',
+  },
+};

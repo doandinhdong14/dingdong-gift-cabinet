@@ -1,0 +1,16 @@
+{
+  "taskId": "task-particle-heart-text-vortex",
+  "batchId": "batch-001",
+  "slot": "01",
+  "effectId": "particle-heart-text-vortex",
+  "branch": "effect/batch-001/01",
+  "port": 5211,
+  "baselineCommit": "main",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/particle-heart-text-vortex/**",
+    ".local/particle-heart-text-vortex/**"
+  ],
+  "kind": "scene",
+  "referenceFiles": []
+}

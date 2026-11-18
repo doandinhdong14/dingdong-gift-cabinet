@@ -1,0 +1,23 @@
+{
+  "manifestVersion": 1,
+  "id": "golden-particle-rose-story",
+  "name": "Golden Particle Love Story & Interactive Rose Bouquet",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "scene",
+  "renderer": "dom",
+  "description": "Hiệu ứng cinematic hạt vàng tình yêu chuyển cảnh thiệp chúc mừng và bó 9 bông hồng nở tương tác xem ảnh",
+  "tags": ["hạt vàng", "trái tim", "bó hoa hồng", "interactive", "love story", "19-11", "cinematic"],
+  "status": "review",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": true,
+    "mediaInputs": ["heartPhoto"]
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}
