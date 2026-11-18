@@ -1,4 +1,4 @@
-import { createConfigCodec, type ConfigCodec, type ValidationError } from '../../effect-sdk';
+import { createConfigCodec, type ConfigCodec } from '../../effect-sdk';
 
 export interface EffectConfig {
   speed: number;
@@ -18,7 +18,6 @@ export const defaults: EffectConfig = {
 
 export const configCodec: ConfigCodec<EffectConfig> = createConfigCodec<EffectConfig>(
   (input: unknown) => {
-    const errors: ValidationError[] = [];
     if (!input || typeof input !== 'object') {
       return { success: false, errors: [{ path: '', message: 'Config must be an object' }] };
     }

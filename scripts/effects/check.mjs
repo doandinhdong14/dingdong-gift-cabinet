@@ -27,7 +27,7 @@ function runCommand(command, args, cwd) {
     const proc = spawn(cmd, args, {
       cwd,
       stdio: 'inherit',
-      shell: false,
+      shell: isWindows,
     });
 
     proc.on('close', (code) => {

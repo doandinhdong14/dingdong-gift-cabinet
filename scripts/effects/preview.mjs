@@ -72,7 +72,7 @@ async function main() {
   const proc = spawn(npxCmd, ['vite', '--port', String(port), '--strictPort'], {
     cwd: repoRoot,
     stdio: 'inherit',
-    shell: false,
+    shell: isWindows,
   });
 
   proc.on('error', (err) => {

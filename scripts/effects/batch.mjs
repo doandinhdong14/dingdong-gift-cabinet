@@ -130,6 +130,18 @@ async function main() {
         }
       }
 
+      // 1.5. Link node_modules via directory junction (or symlink) for instant zero-disk-waste setup
+      const targetNodeModules = path.join(workspacePath, 'node_modules');
+      const rootNodeModules = path.join(repoRoot, 'node_modules');
+      if (fs.existsSync(rootNodeModules) && !fs.existsSync(targetNodeModules)) {
+        try {
+          fs.symlinkSync(rootNodeModules, targetNodeModules, 'junction');
+          console.log(`Linked node_modules via junction.`);
+        } catch (symlinkErr) {
+          console.warn(`Could not link node_modules automatically: ${symlinkErr.message}`);
+        }
+      }
+
       // 2. Scaffold effect in the newly created worktree
       const effectDir = path.join(workspacePath, 'src', 'effects', task.id);
       if (!fs.existsSync(effectDir)) {

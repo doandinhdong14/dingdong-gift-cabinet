@@ -83,10 +83,10 @@ async function main() {
   const statusOutput = runGit(['status', '--porcelain', '-uall']);
   if (statusOutput) {
     for (const line of statusOutput.split('\n')) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
+      if (!line.trim()) continue;
       // Format is XY <path> or ?? <path>
-      const filePath = trimmed.slice(3).trim().replace(/\\/g, '/');
+      const match = line.match(/^..\s+(.*)$/);
+      const filePath = (match ? match[1] : line.slice(3)).trim().replace(/\\/g, '/');
       if (filePath) changedFiles.add(filePath);
     }
   }

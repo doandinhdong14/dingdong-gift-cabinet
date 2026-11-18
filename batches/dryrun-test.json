@@ -1,0 +1,25 @@
+{
+  "batchId": "dryrun-test",
+  "baselineCommit": "1138af2a2fdb44a4b00a1effe6cd2b1416773cb5",
+  "outputDir": "../dingdong-gift-workers",
+  "tasks": [
+    {
+      "slot": "01",
+      "id": "dryrun-ribbon-01",
+      "name": "Dải ruy băng xoay",
+      "kind": "object3d",
+      "desc": "Dải ruy băng 3D màu vàng kim xoay uốn lượn",
+      "port": 5211,
+      "referenceFiles": []
+    },
+    {
+      "slot": "02",
+      "id": "dryrun-confetti-01",
+      "name": "Mưa hạt giấy màu",
+      "kind": "background",
+      "desc": "Hiệu ứng mưa pháo giấy confetti rơi tuần hoàn",
+      "port": 5212,
+      "referenceFiles": []
+    }
+  ]
+}
