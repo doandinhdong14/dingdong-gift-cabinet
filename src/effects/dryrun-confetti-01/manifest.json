@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "dryrun-confetti-01",
+  "name": "Mưa hạt giấy màu",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "background",
+  "renderer": "r3f",
+  "description": "Hiệu ứng mưa pháo giấy confetti rơi tuần hoàn",
+  "tags": ["pháo giấy", "background"],
+  "status": "review",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": false,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}
