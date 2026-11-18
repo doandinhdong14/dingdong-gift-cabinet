@@ -10,7 +10,13 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "effects:create": "node scripts/effects/create.mjs",
+    "effects:check": "node scripts/effects/check.mjs",
+    "effects:scope": "node scripts/effects/scope.mjs",
+    "effects:preview": "node scripts/effects/preview.mjs",
+    "effects:batch": "node scripts/effects/batch.mjs",
+    "effects:report": "node scripts/effects/report.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.7",

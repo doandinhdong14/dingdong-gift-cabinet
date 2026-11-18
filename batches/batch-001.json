@@ -1,0 +1,97 @@
+{
+  "batchId": "batch-001",
+  "baselineCommit": "HEAD",
+  "outputDir": "../dingdong-gift-workers",
+  "tasks": [
+    {
+      "slot": "01",
+      "id": "gift-box-open-01",
+      "name": "Hộp quà mở nắp",
+      "kind": "transition",
+      "desc": "Hộp quà mở nắp nhả hạt sao lấp lánh",
+      "port": 5211,
+      "referenceFiles": []
+    },
+    {
+      "slot": "02",
+      "id": "envelope-letter-01",
+      "name": "Phong bì kéo thư",
+      "kind": "transition",
+      "desc": "Phong bì tự mở nắp và kéo lá thư chúc mừng ra phía trước",
+      "port": 5212,
+      "referenceFiles": []
+    },
+    {
+      "slot": "03",
+      "id": "paper-plane-01",
+      "name": "Máy bay giấy",
+      "kind": "object3d",
+      "desc": "Máy bay giấy trắng bay lượn theo đường cong uốn lượn",
+      "port": 5213,
+      "referenceFiles": []
+    },
+    {
+      "slot": "04",
+      "id": "balloons-rise-01",
+      "name": "Bóng bay nổi lên",
+      "kind": "scene",
+      "desc": "Chùm bóng bay nhiều màu sắc bay lên kèm lời chúc",
+      "port": 5214,
+      "referenceFiles": []
+    },
+    {
+      "slot": "05",
+      "id": "butterflies-swarm-01",
+      "name": "Đàn bướm bay lượn",
+      "kind": "scene",
+      "desc": "Bầy bướm phát sáng bay lượn xung quanh khung ảnh kỷ niệm",
+      "port": 5215,
+      "referenceFiles": []
+    },
+    {
+      "slot": "06",
+      "id": "heart-fireworks-01",
+      "name": "Pháo hoa trái tim",
+      "kind": "background",
+      "desc": "Hiệu ứng nền các chùm pháo hoa nổ bung thành hình trái tim",
+      "port": 5216,
+      "referenceFiles": []
+    },
+    {
+      "slot": "07",
+      "id": "snow-glow-night-01",
+      "name": "Tuyết & Ánh sáng đêm",
+      "kind": "background",
+      "desc": "Bông tuyết phát sáng rơi nhẹ nhàng trong đêm đông lãng mạn",
+      "port": 5217,
+      "referenceFiles": []
+    },
+    {
+      "slot": "08",
+      "id": "flip-card-01",
+      "name": "Thiệp lật trang",
+      "kind": "transition",
+      "desc": "Tấm thiệp 3D lật mở sang trang mới để lộ thông điệp",
+      "port": 5218,
+      "referenceFiles": []
+    },
+    {
+      "slot": "09",
+      "id": "flower-bouquet-01",
+      "name": "Bó hoa bung nở",
+      "kind": "scene",
+      "desc": "Bó hoa tươi bung mở các cánh hoa và hiển thị ảnh",
+      "port": 5219,
+      "referenceFiles": []
+    },
+    {
+      "slot": "10",
+      "id": "floating-lantern-01",
+      "name": "Đèn lồng ước nguyện",
+      "kind": "scene",
+      "desc": "Đèn lồng hoa đăng bay lên bầu trời đêm mang theo điều ước",
+      "port": 5220,
+      "referenceFiles": []
+    }
+  ]
+}

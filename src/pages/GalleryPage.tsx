@@ -7,6 +7,8 @@ import {
   getCategoryCounts,
   CategoryName,
 } from '../gift-library/registry';
+import { getPackageEffects } from '../effect-host/catalog';
+import { AssetManifest, RegistryEntry } from '../gift-library/types';
 import { matchesAssetSearch } from '../utils/searchUtils';
 
 export interface GalleryPageProps {
@@ -25,16 +27,67 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<CategoryName>('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const productAssets = useMemo(() => getProductAssets(), []);
+  const allAssets = useMemo(() => {
+    const legacy = getProductAssets();
+    const packages = getPackageEffects();
+    const combined: RegistryEntry[] = [...legacy];
+
+    for (const pkg of packages) {
+      if (!combined.some((item) => item.manifest.id === pkg.id)) {
+        const mappedManifest: AssetManifest = {
+          schemaVersion: 1,
+          id: pkg.manifest.id,
+          name: pkg.manifest.name,
+          version: pkg.manifest.version,
+          category: pkg.manifest.tags?.[0] || 'Trang trí',
+          kind: pkg.manifest.kind === 'overlay2d' ? '2d' : '3d',
+          description: pkg.manifest.description,
+          tags: pkg.manifest.tags || [],
+          status: (pkg.manifest.status === 'needs-fix' ? 'draft' : pkg.manifest.status) as any,
+          thumbnail: pkg.manifest.thumbnail,
+          fallback: pkg.manifest.fallback,
+          source: 'procedural',
+          license: pkg.manifest.licenses?.[0] || 'MIT',
+          author: 'Worker',
+          dependencies: pkg.manifest.sharedAssets || [],
+          supportedMotions: [],
+        };
+
+        combined.push({
+          manifest: mappedManifest,
+          loadComponent: () => pkg.loadDefinition().then((d) => ({ default: d.Scene as any })),
+          defaultConfig: {} as any,
+          defaultPresets: [],
+        });
+      }
+    }
+
+    return combined;
+  }, []);
 
   // Compute category counts
   const categoryCounts = useMemo(() => {
-    return getCategoryCounts(favorites);
+    const counts = getCategoryCounts(favorites);
+    // Add package effects into counts
+    const packages = getPackageEffects();
+    for (const pkg of packages) {
+      if (!getProductAssets().some((item) => item.manifest.id === pkg.id)) {
+        counts['Tất cả'] = (counts['Tất cả'] || 0) + 1;
+        const cat = (pkg.manifest.tags?.[0] || 'Trang trí') as CategoryName;
+        if (cat in counts) {
+          counts[cat] = (counts[cat] || 0) + 1;
+        }
+        if (favorites.includes(pkg.id)) {
+          counts['Yêu thích'] = (counts['Yêu thích'] || 0) + 1;
+        }
+      }
+    }
+    return counts;
   }, [favorites]);
 
   // Filter items by category and search query
   const filteredAssets = useMemo(() => {
-    return productAssets.filter((entry) => {
+    return allAssets.filter((entry) => {
       // 1. Category filter
       if (selectedCategory === 'Yêu thích') {
         if (!favorites.includes(entry.manifest.id)) return false;
@@ -49,7 +102,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
 
       return true;
     });
-  }, [productAssets, selectedCategory, searchQuery, favorites]);
+  }, [allAssets, selectedCategory, searchQuery, favorites]);
 
   return (
     <div className="gallery-page-container">

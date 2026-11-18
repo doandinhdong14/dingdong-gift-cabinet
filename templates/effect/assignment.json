@@ -1,0 +1,16 @@
+{
+  "taskId": "__TASK_ID__",
+  "batchId": "__BATCH_ID__",
+  "slot": "__SLOT__",
+  "effectId": "__EFFECT_ID__",
+  "branch": "effect/__BATCH_ID__/__SLOT__",
+  "port": __PORT__,
+  "baselineCommit": "__BASELINE_COMMIT__",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/__EFFECT_ID__/**",
+    ".local/__EFFECT_ID__/**"
+  ],
+  "kind": "__EFFECT_KIND__",
+  "referenceFiles": []
+}

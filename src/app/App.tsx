@@ -4,6 +4,8 @@ import GalleryPage from '../pages/GalleryPage';
 import AssetDetailPage from '../pages/AssetDetailPage';
 import IntegrationPage from '../pages/IntegrationPage';
 import GuidePage from '../pages/GuidePage';
+import { EffectPreviewPage } from '../effect-host/EffectPreviewPage';
+import { getPackageEffectById } from '../effect-host/catalog';
 import { getAssetById } from '../gift-library/registry';
 import { loadFavorites, toggleFavorite } from '../storage/presetStorage';
 import { AssetConfig } from '../gift-library/types';
@@ -51,6 +53,17 @@ export const App: React.FC = () => {
 
   // Route matching
   const renderCurrentPage = () => {
+    // 0. Effect package preview: /effects/:id or /preview/:id
+    if (currentPath.startsWith('/effects/') || currentPath.startsWith('/preview/')) {
+      const effectId = currentPath.replace(/^\/(effects|preview)\//, '');
+      return (
+        <EffectPreviewPage
+          effectId={effectId}
+          onBackToGallery={() => navigate('/')}
+        />
+      );
+    }
+
     // 1. Asset detail page: /asset/:id
     if (currentPath.startsWith('/asset/')) {
       const assetId = currentPath.replace('/asset/', '');
@@ -101,7 +114,13 @@ export const App: React.FC = () => {
       <GalleryPage
         favorites={favorites}
         onToggleFavorite={handleToggleFavorite}
-        onSelectAsset={(id) => navigate(`/asset/${id}`)}
+        onSelectAsset={(id) => {
+          if (getPackageEffectById(id)) {
+            navigate(`/effects/${id}`);
+          } else {
+            navigate(`/asset/${id}`);
+          }
+        }}
         onNavigateDev={() => navigate('/asset/dev-box-fixture')}
       />
     );

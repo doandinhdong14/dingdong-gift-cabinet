@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "__EFFECT_ID__",
+  "name": "__EFFECT_NAME__",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "__EFFECT_KIND__",
+  "renderer": "r3f",
+  "description": "__EFFECT_DESC__",
+  "tags": ["hiệu ứng", "__EFFECT_KIND__"],
+  "status": "draft",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": false,
+    "mediaInputs": [],
+    "cameraRig": false,
+    "glow": false
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}
