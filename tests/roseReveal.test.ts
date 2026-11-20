@@ -85,7 +85,7 @@ describe('Rose Reveal 01 — Configuration & Presets Validation', () => {
     const entry = getAssetById('rose-reveal-01');
     expect(entry).toBeDefined();
     expect(entry?.manifest.id).toBe('rose-reveal-01');
-    expect(entry?.manifest.name).toBe('Bông hồng mở quà');
+    expect(entry?.manifest.name).toBe('Card 3');
     expect(entry?.defaultPresets).toHaveLength(4);
 
     const presetNames = entry?.defaultPresets.map((p) => p.name);

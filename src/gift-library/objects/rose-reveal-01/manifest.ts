@@ -3,7 +3,7 @@ import { AssetManifest } from '../../types';
 export const roseReveal01Manifest: AssetManifest = {
   schemaVersion: 1,
   id: 'rose-reveal-01',
-  name: 'Bông hồng mở quà',
+  name: 'Card 3',
   version: '1.0.0',
   category: 'Hộp quà',
   kind: '3d',

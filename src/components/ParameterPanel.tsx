@@ -3,6 +3,7 @@ import { RotateCcw, BookmarkPlus, Copy, Code, Sparkles, Check, AlertCircle } fro
 import { AssetConfig } from '../gift-library/types';
 import { UniverseParameterPanel } from './UniverseParameterPanel';
 import { RoseParameterPanel } from '../gift-library/objects/rose-reveal-01/RoseParameterPanel';
+import { Card11ParameterPanel } from '../gift-library/objects/card-11/Card11ParameterPanel';
 
 export interface ParameterPanelProps {
   config: AssetConfig;
@@ -107,6 +108,8 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
           <UniverseParameterPanel config={config} onChange={onChange} />
         ) : config.assetId === 'rose-reveal-01' ? (
           <RoseParameterPanel config={config} onChange={onChange} />
+        ) : config.assetId === 'card-11' ? (
+          <Card11ParameterPanel config={config} onChange={onChange} />
         ) : (
           <>
             {/* SECTION 1: Appearance */}

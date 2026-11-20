@@ -7,6 +7,8 @@ import { Heart01 } from '../gift-library/objects/heart-01/Heart01';
 import { heart01DefaultConfig } from '../gift-library/objects/heart-01/presets';
 import { LoveUniverse01 } from '../gift-library/objects/love-universe-01/LoveUniverse01';
 import { loveUniverse01DefaultConfig } from '../gift-library/objects/love-universe-01/presets';
+import { Card11 } from '../gift-library/objects/card-11/Card11';
+import { card11DefaultConfig } from '../gift-library/objects/card-11/presets';
 import { LoveUniverseIntroButton } from '../gift-library/objects/love-universe-01/LoveUniverseIntroButton';
 import { StudioLighting } from '../viewer/StudioLighting';
 import { AssetConfig } from '../gift-library/types';
@@ -16,8 +18,12 @@ export interface IntegrationPageProps {
 }
 
 export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConfig }) => {
-  const [activeAssetId, setActiveAssetId] = useState<'heart-01' | 'love-universe-01'>(() => {
-    return lastActiveConfig?.assetId === 'love-universe-01' ? 'love-universe-01' : 'heart-01';
+  const [activeAssetId, setActiveAssetId] = useState<'heart-01' | 'love-universe-01' | 'card-11'>(() => {
+    return lastActiveConfig?.assetId === 'card-11'
+      ? 'card-11'
+      : lastActiveConfig?.assetId === 'love-universe-01'
+      ? 'love-universe-01'
+      : 'heart-01';
   });
 
   const [showSecondInstance, setShowSecondInstance] = useState(true);
@@ -34,6 +40,13 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
     return lastActiveConfig && lastActiveConfig.assetId === 'love-universe-01'
       ? lastActiveConfig
       : loveUniverse01DefaultConfig;
+  });
+
+  // Card 11 config
+  const [card11Config, setCard11Config] = useState<AssetConfig>(() => {
+    return lastActiveConfig && lastActiveConfig.assetId === 'card-11'
+      ? lastActiveConfig
+      : card11DefaultConfig;
   });
 
   const [isCardUniverseOpened, setIsCardUniverseOpened] = useState(false);
@@ -63,6 +76,8 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
         setHeartConfig({ ...lastActiveConfig });
       } else if (lastActiveConfig.assetId === 'love-universe-01') {
         setUniverseConfig({ ...lastActiveConfig });
+      } else if (lastActiveConfig.assetId === 'card-11') {
+        setCard11Config({ ...lastActiveConfig });
       }
     }
   };
@@ -79,7 +94,7 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
           onClick={() => setActiveAssetId('heart-01')}
         >
           <Heart size={16} />
-          <span>Trái tim mẫu 1 (heart-01)</span>
+          <span>Card 1 (heart-01)</span>
         </button>
         <button
           type="button"
@@ -89,7 +104,17 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
           onClick={() => setActiveAssetId('love-universe-01')}
         >
           <Orbit size={16} />
-          <span>Vũ trụ lời chúc (love-universe-01)</span>
+          <span>Card 2 (love-universe-01)</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeAssetId === 'card-11'}
+          className={`integration-tab-btn ${activeAssetId === 'card-11' ? 'active' : ''}`}
+          onClick={() => setActiveAssetId('card-11')}
+        >
+          <Sparkles size={16} />
+          <span>Card 11 (card-11)</span>
         </button>
       </div>
 
@@ -98,20 +123,26 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
         <div className="notice-icon-col">
           {activeAssetId === 'heart-01' ? (
             <Heart size={24} className="text-primary" />
-          ) : (
+          ) : activeAssetId === 'love-universe-01' ? (
             <Orbit size={24} className="text-primary" />
+          ) : (
+            <Sparkles size={24} className="text-primary" />
           )}
         </div>
         <div className="notice-body-col">
           <h4>
             {activeAssetId === 'heart-01'
-              ? 'Thử nghiệm tái sử dụng Trái tim mẫu 1 (heart-01) trên thiệp'
-              : 'Thử nghiệm tái sử dụng Vũ trụ lời chúc (love-universe-01) trên thiệp'}
+              ? 'Thử nghiệm tái sử dụng Card 1 (heart-01) trên thiệp'
+              : activeAssetId === 'love-universe-01'
+              ? 'Thử nghiệm tái sử dụng Card 2 (love-universe-01) trên thiệp'
+              : 'Thử nghiệm tái sử dụng Card 11 (Trái tim ma trận 3D) trên thiệp'}
           </h4>
           <p>
             {activeAssetId === 'heart-01'
               ? 'Trang này xác minh khả năng tái sử dụng thực tế của component Heart01 và MotionRig. Bạn có thể kiểm tra 2 instance hoạt động đồng thời và hoàn toàn độc lập về màu sắc, scale và chuyển động.'
-              : 'Trang này xác minh việc nhúng toàn bộ component LoveUniverse01 vào một tấm thiệp chúc mừng. Bạn có thể bấm "Chạm để mở vũ trụ", xoay đa chiều có damping, và xem ảnh/lời chúc bồng bềnh.'}
+              : activeAssetId === 'love-universe-01'
+              ? 'Trang này xác minh việc nhúng toàn bộ component LoveUniverse01 vào một tấm thiệp chúc mừng. Bạn có thể bấm "Chạm để mở vũ trụ", xoay đa chiều có damping, và xem ảnh/lời chúc bồng bềnh.'
+              : 'Trang này xác minh việc nhúng Card 11 (Ma trận tình yêu 3D) vào tấm thiệp. Bạn có thể dùng tay hoặc chuột kéo xoay 360° trực tiếp trên không gian, phóng to/thu nhỏ và quan sát dải chữ neon uốn lượn.'}
           </p>
           <div className="notice-actions-row">
             {lastActiveConfig && lastActiveConfig.assetId === activeAssetId && (
@@ -145,7 +176,20 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
 
       {/* Greeting Card Mockup */}
       <div className="card-mockup-wrapper">
-        <div className={`greeting-card-surface ${activeAssetId === 'love-universe-01' ? 'card-surface-universe' : ''}`}>
+        <div
+          className={`greeting-card-surface ${
+            activeAssetId === 'love-universe-01'
+              ? 'card-surface-universe'
+              : activeAssetId === 'card-11'
+              ? 'card-surface-universe'
+              : ''
+          }`}
+          style={
+            activeAssetId === 'card-11'
+              ? { background: 'radial-gradient(ellipse at 50% 50%, #150620 0%, #06010a 100%)' }
+              : undefined
+          }
+        >
           <div className="card-decorative-border">
             <div className="card-content-area">
               <header className="card-greeting-header">
@@ -155,18 +199,24 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
                 <h2 className="card-main-title">
                   {activeAssetId === 'heart-01'
                     ? 'Một chút yêu thương dành cho bạn'
-                    : 'Vũ trụ yêu thương trao gửi đến bạn'}
+                    : activeAssetId === 'love-universe-01'
+                    ? 'Vũ trụ yêu thương trao gửi đến bạn'
+                    : 'Thông điệp tình yêu xoay vần giữa không gian'}
                 </h2>
                 <p className="card-sub-title">
                   {activeAssetId === 'heart-01'
                     ? 'Chúc bạn một ngày ấm áp, ngập tràn nụ cười và những điều dịu dàng nhất.'
-                    : 'Nơi lưu giữ ngàn lời chúc ngọt ngào và những kỷ niệm rực rỡ nhất giữa các vì sao.'}
+                    : activeAssetId === 'love-universe-01'
+                    ? 'Nơi lưu giữ ngàn lời chúc ngọt ngào và những kỷ niệm rực rỡ nhất giữa các vì sao.'
+                    : 'Trái tim ánh sáng 3D uốn lượn bằng những lời nhắn chân thành gửi trọn đến người yêu thương.'}
                 </p>
               </header>
 
               {/* 3D Scene viewport on card */}
               <div
-                className={`card-viewport-stage ${activeAssetId === 'love-universe-01' ? 'stage-universe-height' : ''}`}
+                className={`card-viewport-stage ${
+                  activeAssetId === 'love-universe-01' || activeAssetId === 'card-11' ? 'stage-universe-height' : ''
+                }`}
                 role="region"
                 aria-label="Khung chi tiết trang trí thiệp"
               >
@@ -217,7 +267,7 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
                       autoRotate={false}
                     />
                   </Canvas>
-                ) : (
+                ) : activeAssetId === 'love-universe-01' ? (
                   <Canvas
                     camera={{ position: [0, 0, 9.2], fov: 45 }}
                     dpr={[1, 1.5]}
@@ -239,6 +289,10 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
                       maxDistance={22.0}
                     />
                   </Canvas>
+                ) : (
+                  <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
+                    <Card11 config={card11Config} />
+                  </div>
                 )}
 
                 {activeAssetId === 'love-universe-01' && !isCardUniverseOpened && (
@@ -251,7 +305,9 @@ export const IntegrationPage: React.FC<IntegrationPageProps> = ({ lastActiveConf
                 <span className="card-signature">
                   {activeAssetId === 'heart-01'
                     ? 'Thân gửi từ DingDong Gift ✨'
-                    : 'Gửi ngàn vì sao đến người đặc biệt ✨'}
+                    : activeAssetId === 'love-universe-01'
+                    ? 'Gửi ngàn vì sao đến người đặc biệt ✨'
+                    : 'Gửi trọn tình yêu thương đong đầy ✨'}
                 </span>
               </footer>
             </div>

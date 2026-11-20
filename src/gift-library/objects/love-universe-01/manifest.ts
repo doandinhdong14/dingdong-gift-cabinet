@@ -3,7 +3,7 @@ import { AssetManifest } from '../../types';
 export const loveUniverse01Manifest: AssetManifest = {
   schemaVersion: 1,
   id: 'love-universe-01',
-  name: 'Vũ trụ lời chúc',
+  name: 'Card 2',
   version: '0.1.0',
   category: 'Trang trí',
   kind: '3d',

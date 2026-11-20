@@ -35,7 +35,7 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
   const obj = raw as Record<string, unknown>;
 
   // Check allowed keys at root
-  const allowedRootKeys = ['schemaVersion', 'assetId', 'assetVersion', 'appearance', 'transform', 'motion', 'universe', 'roseReveal'];
+  const allowedRootKeys = ['schemaVersion', 'assetId', 'assetVersion', 'appearance', 'transform', 'motion', 'universe', 'roseReveal', 'card11'];
   for (const k of Object.keys(obj)) {
     if (!allowedRootKeys.includes(k)) {
       errors.push(`Trường không được hỗ trợ trong cấu hình: '${k}'`);
@@ -411,6 +411,95 @@ export function validateAssetConfig(raw: unknown): ValidationResult<AssetConfig>
       }
       if ('inspectionMode' in r && r.inspectionMode !== undefined && typeof r.inspectionMode !== 'boolean') {
         errors.push('roseReveal.inspectionMode phải là boolean.');
+      }
+    }
+  }
+
+  // card11 validation
+  if ('card11' in obj) {
+    if (!obj.card11 || typeof obj.card11 !== 'object' || Array.isArray(obj.card11)) {
+      errors.push('card11 phải là một đối tượng cấu hình.');
+    } else {
+      const c = obj.card11 as Record<string, unknown>;
+      const allowedCard11Keys = [
+        'text',
+        'phrases',
+        'itemCount',
+        'speed',
+        'heartScale',
+        'depth3D',
+        'textColor',
+        'glowColor',
+        'glowIntensity',
+        'secondaryColor',
+        'useAlternatingColors',
+        'backgroundColor',
+        'orientationMode',
+        'trajectoryMode',
+        'autoRotate',
+        'autoRotateSpeed',
+        'tiltAngleDeg',
+        'fontSize',
+      ];
+      for (const ck of Object.keys(c)) {
+        if (!allowedCard11Keys.includes(ck)) {
+          errors.push(`Trường không được hỗ trợ trong card11: '${ck}'`);
+        }
+      }
+
+      if ('text' in c && typeof c.text !== 'string') {
+        errors.push('card11.text phải là chuỗi văn bản.');
+      }
+      if ('phrases' in c && (!Array.isArray(c.phrases) || !c.phrases.every((p) => typeof p === 'string'))) {
+        errors.push('card11.phrases phải là mảng các chuỗi văn bản.');
+      }
+      if ('itemCount' in c && (!isFiniteNumber(c.itemCount) || !inRange(c.itemCount, 5, 300))) {
+        errors.push('card11.itemCount phải là số hữu hạn từ 5 đến 300.');
+      }
+      if ('speed' in c && (!isFiniteNumber(c.speed) || !inRange(c.speed, 0.05, 10.0))) {
+        errors.push('card11.speed phải là số hữu hạn từ 0.05 đến 10.0.');
+      }
+      if ('heartScale' in c && (!isFiniteNumber(c.heartScale) || !inRange(c.heartScale, 0.2, 5.0))) {
+        errors.push('card11.heartScale phải là số hữu hạn từ 0.2 đến 5.0.');
+      }
+      if ('depth3D' in c && (!isFiniteNumber(c.depth3D) || !inRange(c.depth3D, 0.0, 5.0))) {
+        errors.push('card11.depth3D phải là số hữu hạn từ 0.0 đến 5.0.');
+      }
+      if ('textColor' in c && (typeof c.textColor !== 'string' || !HEX_COLOR_REGEX.test(c.textColor))) {
+        errors.push('card11.textColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('glowColor' in c && (typeof c.glowColor !== 'string' || !HEX_COLOR_REGEX.test(c.glowColor))) {
+        errors.push('card11.glowColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('secondaryColor' in c && c.secondaryColor && (typeof c.secondaryColor !== 'string' || !HEX_COLOR_REGEX.test(c.secondaryColor))) {
+        errors.push('card11.secondaryColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('backgroundColor' in c && (typeof c.backgroundColor !== 'string' || !HEX_COLOR_REGEX.test(c.backgroundColor))) {
+        errors.push('card11.backgroundColor phải là mã màu HEX hợp lệ.');
+      }
+      if ('glowIntensity' in c && (!isFiniteNumber(c.glowIntensity) || !inRange(c.glowIntensity, 0.0, 5.0))) {
+        errors.push('card11.glowIntensity phải là số hữu hạn từ 0.0 đến 5.0.');
+      }
+      if ('useAlternatingColors' in c && typeof c.useAlternatingColors !== 'boolean') {
+        errors.push('card11.useAlternatingColors phải là boolean.');
+      }
+      if ('orientationMode' in c && !['tangent', 'billboard'].includes(c.orientationMode as string)) {
+        errors.push('card11.orientationMode phải là "tangent" hoặc "billboard".');
+      }
+      if ('trajectoryMode' in c && !['original-matrix', 'smooth-3d'].includes(c.trajectoryMode as string)) {
+        errors.push('card11.trajectoryMode phải là "original-matrix" hoặc "smooth-3d".');
+      }
+      if ('autoRotate' in c && typeof c.autoRotate !== 'boolean') {
+        errors.push('card11.autoRotate phải là boolean.');
+      }
+      if ('autoRotateSpeed' in c && (!isFiniteNumber(c.autoRotateSpeed) || !inRange(c.autoRotateSpeed, -10.0, 10.0))) {
+        errors.push('card11.autoRotateSpeed phải là số hữu hạn từ -10.0 đến 10.0.');
+      }
+      if ('tiltAngleDeg' in c && (!isFiniteNumber(c.tiltAngleDeg) || !inRange(c.tiltAngleDeg, -180, 180))) {
+        errors.push('card11.tiltAngleDeg phải là số hữu hạn từ -180 đến 180 độ.');
+      }
+      if ('fontSize' in c && (!isFiniteNumber(c.fontSize) || !inRange(c.fontSize, 0.2, 5.0))) {
+        errors.push('card11.fontSize phải là số hữu hạn từ 0.2 đến 5.0.');
       }
     }
   }

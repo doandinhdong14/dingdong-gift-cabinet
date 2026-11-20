@@ -1,0 +1,16 @@
+{
+  "taskId": "task-word-love-code",
+  "batchId": "batch-001",
+  "slot": "01",
+  "effectId": "word-love-code",
+  "branch": "effect/batch-001/01",
+  "port": 5211,
+  "baselineCommit": "main",
+  "sdkApiVersion": 1,
+  "allowedPaths": [
+    "src/effects/word-love-code/**",
+    ".local/word-love-code/**"
+  ],
+  "kind": "scene",
+  "referenceFiles": []
+}

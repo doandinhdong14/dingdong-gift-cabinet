@@ -25,7 +25,7 @@ export function generatePresetExportJson(presets: Preset[]): string {
 
 /**
  * Capitalizes an asset ID to a valid PascalCase React component name.
- * e.g. "dev-box-fixture" -> "DevBoxFixture"
+ * e.g. "dev-box-fixture" -> "DevBox"
  * e.g. "heart-01" -> "Heart01"
  */
 export function getComponentNameFromId(assetId: string): string {
@@ -42,6 +42,24 @@ export function getComponentNameFromId(assetId: string): string {
 export function generateJsxSnippet(manifest: AssetManifest, config: AssetConfig): string {
   const componentName = getComponentNameFromId(manifest.id);
   const importFolder = manifest.id === 'dev-box-fixture' ? 'dev-fixture' : manifest.id;
+
+  if (manifest.id === 'card-11') {
+    return `import React from 'react';
+import { Card11 } from './gift-library/objects/card-11';
+
+// Cấu hình Card 11 (Trái tim ma trận) trích xuất từ DingDong Gift Cabinet
+const assetConfig = ${JSON.stringify(config, null, 2)};
+
+export function CardGreeting11() {
+  return (
+    <div style={{ width: '100%', height: '540px', position: 'relative', borderRadius: '16px', overflow: 'hidden' }}>
+      <Card11 config={assetConfig} />
+    </div>
+  );
+}
+
+export default CardGreeting11;`;
+  }
 
   if (manifest.id === 'rose-reveal-01') {
     return `import React from 'react';
@@ -159,6 +177,42 @@ export default CardGreeting;`;
 export function generateAiInstructions(manifest: AssetManifest, config: AssetConfig): string {
   const componentName = getComponentNameFromId(manifest.id);
   const importFolder = manifest.id === 'dev-box-fixture' ? 'dev-fixture' : manifest.id;
+
+  if (manifest.id === 'card-11') {
+    return `### Chỉ dẫn AI: Ghép Card 11 (Trái tim ma trận 3D không gian) vào thiệp DingDong Gift
+
+**Tài nguyên:** ${manifest.name} (ID: \`${manifest.id}\`, Phiên bản: \`v${manifest.version}\`)
+**Loại:** ${manifest.kind.toUpperCase()} (${manifest.source})
+
+---
+
+#### 1. Nguyên tắc quan trọng:
+- **TÁI SỬ DỤNG TRỰC TIẾP:** Sử dụng component \`Card11\` từ thư mục \`src/gift-library/objects/card-11/\`.
+- **ĐẶC ĐIỂM CARD 11:** Hàng trăm dòng chữ tình yêu uốn lượn theo quỹ đạo hình tim trong không gian 3D, phát sáng neon rực rỡ.
+- Hỗ trợ đầy đủ tương tác cảm ứng bằng tay / chuột (xoay 360 độ quanh không gian, phóng to thu nhỏ), chỉnh câu chữ, font chữ, màu sắc neon và độ sâu không gian 3D.
+
+#### 2. Các file cần sao chép sang dự án thiệp:
+- Thư mục component: \`src/gift-library/objects/card-11/\`
+- Thư mục MotionRig: \`src/gift-library/motion/\`
+- File định nghĩa kiểu: \`src/gift-library/types.ts\`
+
+#### 3. Các thư viện phụ thuộc (Dependencies):
+\`\`\`bash
+npm install three @react-three/fiber @react-three/drei
+npm install -D @types/three
+\`\`\`
+
+#### 4. Cấu hình tham số đã tinh chỉnh (AssetConfig JSON):
+\`\`\`json
+${JSON.stringify(config, null, 2)}
+\`\`\`
+
+#### 5. Cách tích hợp vào Canvas React Three Fiber:
+- Đặt camera tại \`position: [0, 0, 6.8]\`, \`fov: 45\`.
+- Sử dụng OrbitControls với \`enableDamping={true}\`, \`dampingFactor={0.06}\`, \`minDistance={2.0}\`, \`maxDistance={14.0}\`.
+- Truyền \`config={assetConfig}\` vào \`<Card11 />\`.
+`;
+  }
 
   if (manifest.id === 'rose-reveal-01') {
     return `### Chỉ dẫn AI: Ghép Bông hồng mở quà vào thiệp DingDong Gift

@@ -3,7 +3,7 @@ import { AssetManifest } from '../../types';
 export const heart01Manifest: AssetManifest = {
   schemaVersion: 1,
   id: 'heart-01',
-  name: 'Trái tim mẫu 1',
+  name: 'Card 1',
   version: '0.1.0',
   category: 'Trái tim',
   kind: '3d',

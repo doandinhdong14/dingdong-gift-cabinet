@@ -30,11 +30,12 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
 }) => {
   const isUniverse = manifest.id === 'love-universe-01';
   const isRose = manifest.id === 'rose-reveal-01';
+  const isCard11 = manifest.id === 'card-11';
 
   const [LoadedComponent, setLoadedComponent] = useState<React.ComponentType<Record<string, unknown>> | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [bgMode, setBgMode] = useState<BackgroundMode>(() => (isUniverse || isRose ? 'dark' : 'light'));
+  const [bgMode, setBgMode] = useState<BackgroundMode>(() => (isUniverse || isRose || isCard11 ? 'dark' : 'light'));
   const [qualityMode, setQualityMode] = useState<QualityMode>('high');
   const [webGlContextLost, setWebGlContextLost] = useState(false);
   const [isUniverseOpened, setIsUniverseOpened] = useState(() => {
@@ -186,6 +187,8 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
         style={
           isRose && config.roseReveal?.backgroundColor
             ? { background: `radial-gradient(ellipse at 50% 35%, ${config.roseReveal.backgroundColor} 0%, #0d040c 100%)` }
+            : isCard11 && config.card11?.backgroundColor
+            ? { background: `radial-gradient(ellipse at 50% 50%, ${config.card11.backgroundColor} 0%, #030005 100%)` }
             : undefined
         }
       >
@@ -213,79 +216,91 @@ export const AssetViewer: React.FC<AssetViewerProps> = ({
           </div>
         ) : (
           <ViewerErrorBoundary fallbackSvgUrl={resolveAssetUrl(manifest.fallback)}>
-            <Canvas
-              camera={{ position: isUniverse ? [0, 0, 9.2] : isRose ? [0, 1.1, 6.2] : [0, 0, 4.5], fov: 45 }}
-              dpr={dpr}
-              gl={{
-                alpha: true,
-                antialias: true,
-                powerPreference: 'high-performance',
-              }}
-              onCreated={({ gl }) => {
-                const domEl = gl.domElement;
-                const handleContextLost = (e: Event) => {
-                  e.preventDefault();
-                  setWebGlContextLost(true);
-                };
-                const handleContextRestored = () => {
-                  setWebGlContextLost(false);
-                };
-                domEl.addEventListener('webglcontextlost', handleContextLost, false);
-                domEl.addEventListener('webglcontextrestored', handleContextRestored, false);
-              }}
-            >
-              {!isUniverse && !isRose && <StudioLighting />}
-
-              <Suspense fallback={null}>
+            {isCard11 ? (
+              <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
                 {LoadedComponent && (
-                  isUniverse ? (
-                    <LoadedComponent
-                      config={config}
-                      paused={isPaused}
-                      quality={qualityMode}
-                      isOpened={isUniverseOpened}
-                    />
-                  ) : isRose ? (
-                    <LoadedComponent
-                      config={config}
-                      paused={isPaused}
-                      quality={qualityMode}
-                      state={roseState}
-                      bloomProgress={
-                        config.roseReveal?.manualBloomProgress !== undefined && config.roseReveal.manualBloomProgress >= 0
-                          ? config.roseReveal.manualBloomProgress
-                          : roseBloomProgress
-                      }
-                      flightProgress={roseFlightProgress}
-                      onTriggerBloom={handleTriggerRoseBloom}
-                    />
-                  ) : (
-                    <MotionRig
-                      transform={config.transform}
-                      motion={config.motion}
-                      paused={isPaused}
-                    >
-                      <LoadedComponent
-                        color={config.appearance.color}
-                        roughness={config.appearance.roughness}
-                        metalness={config.appearance.metalness}
-                      />
-                    </MotionRig>
-                  )
+                  <LoadedComponent
+                    config={config}
+                    paused={isPaused}
+                    quality={qualityMode}
+                  />
                 )}
-              </Suspense>
+              </div>
+            ) : (
+              <Canvas
+                camera={{ position: isUniverse ? [0, 0, 9.2] : isRose ? [0, 1.1, 6.2] : [0, 0, 4.5], fov: 45 }}
+                dpr={dpr}
+                gl={{
+                  alpha: true,
+                  antialias: true,
+                  powerPreference: 'high-performance',
+                }}
+                onCreated={({ gl }) => {
+                  const domEl = gl.domElement;
+                  const handleContextLost = (e: Event) => {
+                    e.preventDefault();
+                    setWebGlContextLost(true);
+                  };
+                  const handleContextRestored = () => {
+                    setWebGlContextLost(false);
+                  };
+                  domEl.addEventListener('webglcontextlost', handleContextLost, false);
+                  domEl.addEventListener('webglcontextrestored', handleContextRestored, false);
+                }}
+              >
+                {!isUniverse && !isRose && <StudioLighting />}
 
-              <OrbitControls
-                ref={controlsRef}
-                enablePan={false}
-                enableDamping={true}
-                dampingFactor={0.05}
-                enabled={!isRose || config.roseReveal?.inspectionMode === true}
-                minDistance={isUniverse ? 3.5 : 2.5}
-                maxDistance={isUniverse ? 24.0 : 8.0}
-                makeDefault
-              />
-            </Canvas>
+                <Suspense fallback={null}>
+                  {LoadedComponent && (
+                    isUniverse ? (
+                      <LoadedComponent
+                        config={config}
+                        paused={isPaused}
+                        quality={qualityMode}
+                        isOpened={isUniverseOpened}
+                      />
+                    ) : isRose ? (
+                      <LoadedComponent
+                        config={config}
+                        paused={isPaused}
+                        quality={qualityMode}
+                        state={roseState}
+                        bloomProgress={
+                          config.roseReveal?.manualBloomProgress !== undefined && config.roseReveal.manualBloomProgress >= 0
+                            ? config.roseReveal.manualBloomProgress
+                            : roseBloomProgress
+                        }
+                        flightProgress={roseFlightProgress}
+                        onTriggerBloom={handleTriggerRoseBloom}
+                      />
+                    ) : (
+                      <MotionRig
+                        transform={config.transform}
+                        motion={config.motion}
+                        paused={isPaused}
+                      >
+                        <LoadedComponent
+                          color={config.appearance.color}
+                          roughness={config.appearance.roughness}
+                          metalness={config.appearance.metalness}
+                        />
+                      </MotionRig>
+                    )
+                  )}
+                </Suspense>
+
+                <OrbitControls
+                  ref={controlsRef}
+                  enablePan={false}
+                  enableDamping={true}
+                  dampingFactor={0.05}
+                  enabled={!isRose || config.roseReveal?.inspectionMode === true}
+                  minDistance={isUniverse ? 3.5 : 2.5}
+                  maxDistance={isUniverse ? 24.0 : 8.0}
+                  makeDefault
+                />
+              </Canvas>
+            )}
           </ViewerErrorBoundary>
         )}
 

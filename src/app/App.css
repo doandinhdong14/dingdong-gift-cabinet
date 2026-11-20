@@ -822,6 +822,14 @@ a {
   position: relative;
 }
 
+.viewer-canvas-container canvas {
+  cursor: grab;
+}
+
+.viewer-canvas-container canvas:active {
+  cursor: grabbing;
+}
+
 /* Background modes for viewer */
 .bg-mode-light .viewer-canvas-container {
   background-color: #FAF9F6;

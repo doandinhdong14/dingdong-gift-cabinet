@@ -137,6 +137,27 @@ export interface RoseRevealConfig {
   inspectionMode?: boolean;
 }
 
+export interface Card11Config {
+  text: string;
+  phrases: string[];
+  itemCount: number;
+  speed: number;
+  heartScale: number;
+  depth3D: number;
+  textColor: string;
+  glowColor: string;
+  glowIntensity: number;
+  secondaryColor?: string;
+  useAlternatingColors: boolean;
+  backgroundColor: string;
+  orientationMode: 'tangent' | 'billboard';
+  trajectoryMode: 'original-matrix' | 'smooth-3d';
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+  tiltAngleDeg: number;
+  fontSize: number;
+}
+
 export interface AssetConfig {
   schemaVersion: 1;
   assetId: string;
@@ -146,6 +167,7 @@ export interface AssetConfig {
   motion: AssetMotion;
   universe?: UniverseConfig;
   roseReveal?: RoseRevealConfig;
+  card11?: Card11Config;
 }
 
 export interface Preset {

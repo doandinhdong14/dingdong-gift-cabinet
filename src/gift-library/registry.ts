@@ -7,6 +7,8 @@ import { loveUniverse01Manifest } from './objects/love-universe-01/manifest';
 import { loveUniverse01DefaultConfig, loveUniverse01Presets } from './objects/love-universe-01/presets';
 import { roseReveal01Manifest } from './objects/rose-reveal-01/manifest';
 import { roseReveal01DefaultConfig, roseReveal01Presets } from './objects/rose-reveal-01/presets';
+import { card11Manifest } from './objects/card-11/manifest';
+import { card11DefaultConfig, card11Presets } from './objects/card-11/presets';
 
 /**
  * Standard categories defined in spec
@@ -56,6 +58,12 @@ export const PRODUCT_REGISTRY: RegistryEntry[] = [
     loadComponent: () => import('./objects/rose-reveal-01/RoseReveal01'),
     defaultConfig: roseReveal01DefaultConfig,
     defaultPresets: roseReveal01Presets,
+  },
+  {
+    manifest: card11Manifest,
+    loadComponent: () => import('./objects/card-11/Card11'),
+    defaultConfig: card11DefaultConfig,
+    defaultPresets: card11Presets,
   },
 ];
 

@@ -28,13 +28,13 @@ describe('UI Smoke & Component Integration Tests (Stage B)', () => {
     ).toBeInTheDocument();
 
     // Verify Heart-01 and Love-Universe-01 cards are rendered in the gallery grid
-    expect(screen.getByText('Trái tim mẫu 1')).toBeInTheDocument();
-    expect(screen.getByText('Vũ trụ lời chúc')).toBeInTheDocument();
+    expect(screen.getByText('Card 1')).toBeInTheDocument();
+    expect(screen.getByText('Card 2')).toBeInTheDocument();
     expect(screen.getAllByText('v0.1.0').length).toBeGreaterThanOrEqual(2);
     expect(screen.getAllByText(/Chờ duyệt/i).length).toBeGreaterThanOrEqual(2); // review status
 
     // Click "Xem mẫu" on the heart card
-    const viewBtn = screen.getByRole('button', { name: /Xem mẫu Trái tim mẫu 1/i });
+    const viewBtn = screen.getByRole('button', { name: /^Xem mẫu Card 1$/i });
     fireEvent.click(viewBtn);
     expect(handleSelect).toHaveBeenCalledWith('heart-01');
   });
@@ -91,7 +91,7 @@ describe('UI Smoke & Component Integration Tests (Stage B)', () => {
     // Switch to AI tab
     const aiTab = screen.getByRole('button', { name: /Lệnh cho AI/i });
     fireEvent.click(aiTab);
-    expect(screen.getByText(/Trái tim mẫu 1/)).toBeInTheDocument();
+    expect(screen.getByText(/Card 1/)).toBeInTheDocument();
     expect(screen.getByText(/KHÔNG TỰ Ý DỰNG LẠI HÌNH HỌC/)).toBeInTheDocument();
   });
 });

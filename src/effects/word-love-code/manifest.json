@@ -1,0 +1,23 @@
+{
+  "manifestVersion": 1,
+  "id": "word-love-code",
+  "name": "Card 10",
+  "version": "0.1.0",
+  "configVersion": 1,
+  "sdkApiVersion": 1,
+  "kind": "scene",
+  "renderer": "dom",
+  "description": "Hiệu ứng chữ mưa rơi Matrix ma trận số, các hạt kết tụ đếm ngược morphing thành chữ và bung nở trái tim nhịp đập phát sáng",
+  "tags": ["matrix", "trái tim", "chữ morphing", "countdown", "particle heart", "love code"],
+  "status": "approved",
+  "thumbnail": "./preview/thumbnail.webp",
+  "fallback": "./preview/fallback.svg",
+  "capabilities": {
+    "composable": true,
+    "interactive": true,
+    "completionEvent": true,
+    "mediaInputs": []
+  },
+  "sharedAssets": [],
+  "licenses": ["MIT"]
+}
